@@ -45,3 +45,7 @@ password
 ### [cli](spot/cli/README.md)
 
 Hlavní spustitelný modul, zpracovává argumenty příkazu a spouští všechny ostatní moduly.
+
+### curses
+
+Terminal user interface (TUI) library for EStop client.
