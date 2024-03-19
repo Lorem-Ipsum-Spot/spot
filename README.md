@@ -46,6 +46,6 @@ password
 
 Hlavní spustitelný modul, zpracovává argumenty příkazu a spouští všechny ostatní moduly.
 
-### curses
+### [curses](spot/curses/README.md)
 
 Terminal user interface (TUI) library for EStop client.
