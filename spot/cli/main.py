@@ -1,26 +1,24 @@
-import argparse
+from argparse import ArgumentParser
+from multiprocessing import Process
 
-import bosdyn.client.util
-import bosdyn.client.estop
+import bosdyn.client
+from bosdyn.client import util
 from bosdyn.client.robot_state import RobotStateClient
 
-from spot.communication.estop import Estop
-from spot.cli.curses import run_curses_gui
+from spot.communication import Estop
 
-
-from multiprocessing import Process
+from .curses import run_curses_gui
 
 
 def main():
-    parser = argparse.ArgumentParser()
-    bosdyn.client.util.add_base_arguments(parser)
+    parser = ArgumentParser()
+    util.add_base_arguments(parser)
     parser.add_argument(
         "-t", "--timeout", type=float, default=5, help="Timeout in seconds"
     )
     parser.add_argument(
         "-c", "--credentials", type=str, default=None, help="Credentials file"
     )
-    # parser.add_argument("command", type=str, help="The command to execute")
     options = parser.parse_args()
 
     sdk = bosdyn.client.create_standard_sdk("estop_nogui")
@@ -34,7 +32,7 @@ def main():
             print(f"Password: {'*' * len(password)}")
             robot.authenticate(name, password)
     else:
-        bosdyn.client.util.authenticate(robot)
+        util.authenticate(robot)
 
     print("Authenticated")
     print("Initializing Estop")
