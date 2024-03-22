@@ -6,6 +6,7 @@ from bosdyn.client.robot_state import RobotStateClient
 
 from spot.communication.estop import Estop
 from spot.cli.curses import run_curses_gui
+from spot.cli.server import run_http_server
 
 
 from multiprocessing import Process
@@ -57,5 +58,7 @@ def main():
     p = Process(target=f, args=("bob",))
     p.start()
     p.join()
+
+    run_http_server()
 
     print("program")
