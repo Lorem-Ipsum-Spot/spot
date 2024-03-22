@@ -1,7 +1,5 @@
 from bosdyn.geometry import EulerZXY
 from bosdyn.client.robot_command import RobotCommandBuilder
-[mypy-aws_xray_sdk]
-ignore_missing_imports = True
 
 class Move:
     def __init__(self, commandClient) -> None:
@@ -18,3 +16,6 @@ class Move:
 
 
         #robot.power_off(cut_immediately=False)
+    
+    def walk(self):
+        pass
