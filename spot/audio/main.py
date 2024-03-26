@@ -3,14 +3,31 @@ import speech_recognition as sr  # type: ignore
 # Initialize the recognizer
 recognizer = sr.Recognizer()
 
-# Define actions for each command
+# Function to process recognized commands
+def process_command(command):
+    if "noze" in command:
+        come_here()
+    else:
+        switch = {
+            "dopředu": move_forward,
+            "dozadu": move_backward,
+            "sedni": sit_down,
+            "lehni": lie_down,
+            "následuj": follow
+        }
+        # Get the function corresponding to the command, or default to command_not_recognized
+        command_function = switch.get(command, command_not_recognized)
+        # Execute the function
+        command_function()
+
+# Command functions
 def come_here():
     print("Jdu sem...")
 
-def forward():
+def move_forward():
     print("Jdu dopředu...")
 
-def backward():
+def move_backward():
     print("Jdu dozadu...")
 
 def sit_down():
@@ -19,20 +36,11 @@ def sit_down():
 def lie_down():
     print("Ležím...")
 
-# Function to process recognized commands using a switch-like approach
-def process_command(command):
-    actions = {
-        "k noze": come_here,
-        "dopředu": forward,
-        "dozadu": backward,
-        "sedni": sit_down,
-        "lehni": lie_down
-    }
-    action = actions.get(command, None)
-    if action:
-        action()
-    else:
-        print("Příkaz nerozpoznán")
+def follow():
+    print("Následuji...")
+
+def command_not_recognized():
+    print("Příkaz nerozpoznán")
 
 # Function to listen to microphone input
 def listen_microphone():
@@ -43,9 +51,9 @@ def listen_microphone():
 
     try:
         # Recognize speech using Google Speech Recognition with Czech language
-        command = recognizer.recognize_google(audio, language="cs-CZ")
+        command = recognizer.recognize_google(audio, language="cs-CZ").lower()
         print("Řekli jste:", command)
-        process_command(command.lower())
+        process_command(command)
     except sr.UnknownValueError:
         print("Nerozumím zvuku")
     except sr.RequestError as e:
