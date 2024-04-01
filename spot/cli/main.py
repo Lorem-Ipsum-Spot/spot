@@ -1,9 +1,9 @@
-from argparse import ArgumentParser
 import time
+from argparse import ArgumentParser
 from multiprocessing import Process
 
 import bosdyn.client.estop
-import bosdyn.client.util
+from bosdyn.client import util
 from bosdyn.client.lease import LeaseClient, LeaseKeepAlive
 from bosdyn.client.robot_command import RobotCommandClient
 from bosdyn.client.robot_state import RobotStateClient
@@ -48,42 +48,10 @@ def main():
     estop_client = Estop(robot, options.timeout, "Estop NoGUI")
     print("Estop initialized")
 
-    print("Initializing Robot State Client")
-    state_client = robot.ensure_client(RobotStateClient.default_service_name)
-    print("Robot State Client initialized")
-
-    print("Initializing Command Client")
-    command_client = robot.ensure_client(RobotCommandClient.default_service_name)
-    print("Command Client initialized")
-
-    lease_client = robot.ensure_client(LeaseClient.default_service_name)
-    with LeaseKeepAlive(lease_client, must_acquire=True, return_at_exit=True):
-        print("Powering on robot... This may take several seconds.")
-        robot.power_on(timeout_sec=20)
-        assert robot.is_powered_on(), "Robot power on failed."
-        print("Robot powered on.")
-
-        print("Creating movement controller")
-        movement_controller = Move(state_client, command_client)
-        print("Movement controller ready")
-
-        print("Commanding robot to stand...")
-        movement_controller.stand(height=0.5)
-        print("Robot standing.")
-        time.sleep(3)
-
-        print("Twist")
-        movement_controller.stand(yaw=0.4)
-        time.sleep(3)
-
-        print("Back")
-        movement_controller.stand(height=0.8)
-        time.sleep(3)
-
-        print("Powering off...")
-        robot.power_off(cut_immediately=False, timeout_sec=20)
-        assert not robot.is_powered_on(), "Robot power off failed."
-        print("Robot safely powered off.")
+    state_client, command_client, lease_client = [
+        ensure_client(robot, client)
+        for client in (RobotStateClient, RobotCommandClient, LeaseClient)
+    ]
 
     # def f():
     #     import time
@@ -97,3 +65,43 @@ def main():
     # p.join()
     #
     # print("program")
+
+    with LeaseKeepAlive(lease_client, must_acquire=True, return_at_exit=True):
+        example_movement_sequence(robot, state_client, command_client)
+
+
+def example_movement_sequence(robot, state_client, command_client):
+    print("Powering on robot... This may take several seconds.")
+    robot.power_on(timeout_sec=20)
+    assert robot.is_powered_on(), "Robot power on failed."
+    print("Robot powered on.")
+
+    print("Creating movement controller")
+    movement_controller = Move(state_client, command_client)
+    print("Movement controller ready")
+
+    print("Commanding robot to stand...")
+    movement_controller.stand(height=0.5)
+    print("Robot standing.")
+    time.sleep(3)
+
+    print("Twist")
+    movement_controller.stand(yaw=0.4)
+    time.sleep(3)
+
+    print("Back")
+    movement_controller.stand(height=0.8)
+    time.sleep(3)
+
+    print("Powering off...")
+    robot.power_off(cut_immediately=False, timeout_sec=20)
+    assert not robot.is_powered_on(), "Robot power off failed."
+    print("Robot safely powered off.")
+
+
+def ensure_client(robot, client):
+    print(f"Initializing {client.__name__}")
+    result = robot.ensure_client(client.default_service_name)
+    print(f"{client.__name__} initialized")
+
+    return result
