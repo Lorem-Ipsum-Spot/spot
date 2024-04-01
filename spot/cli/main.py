@@ -3,7 +3,7 @@ from argparse import ArgumentParser
 from multiprocessing import Process
 
 import bosdyn.client.estop
-from bosdyn.client import util
+from bosdyn.client import util as bosdyn_util
 from bosdyn.client.lease import LeaseClient, LeaseKeepAlive
 from bosdyn.client.robot_command import RobotCommandClient
 from bosdyn.client.robot_state import RobotStateClient
@@ -15,7 +15,7 @@ from spot.movement.move import Move
 
 def main():
     parser = ArgumentParser()
-    util.add_base_arguments(parser)
+    bosdyn_util.add_base_arguments(parser)
     parser.add_argument(
         "-t", "--timeout", type=float, default=5, help="Timeout in seconds"
     )
@@ -28,14 +28,10 @@ def main():
     robot = sdk.create_robot(options.hostname)
 
     if options.credentials:
-        with open(options.credentials, "r") as file:
-            print(f"Using credentials file: {options.credentials}")
-            name, password = file.read().splitlines()
-            print(f"User: {name}")
-            print(f"Password: {'*' * len(password)}")
-            robot.authenticate(name, password)
+        name, password = load_credential_from_file(options.credentials)
+        robot.authenticate(name, password)
     else:
-        util.authenticate(robot)
+        bosdyn_util.authenticate(robot)
 
     print("Authenticated")
 
@@ -105,3 +101,12 @@ def ensure_client(robot, client):
     print(f"{client.__name__} initialized")
 
     return result
+
+
+def load_credential_from_file(credentials):
+    with open(credentials, "r") as file:
+        print(f"Using credentials file: {credentials}")
+        name, password = file.read().splitlines()
+        print(f"User: {name}")
+        print(f"Password: {'*' * len(password)}")
+        return name, password
