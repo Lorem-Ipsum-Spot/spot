@@ -64,7 +64,8 @@ def run_curses_gui(estop_client, state_client):
 
             try:
                 if c == ord(" "):
-                    estop_client.stop()
+                    # estop_client.stop()
+                    pass
                 if c == ord("r"):
                     estop_client.allow()
                 if c in [ord("q"), 3]:
