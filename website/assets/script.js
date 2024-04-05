@@ -6,7 +6,7 @@ function ListeningSwitch(element)
     if (listening == false)
     {
         listening = true;
-        element.classList.remove("switchButton")
+        element.classList.remove("switchButtonUnactive")
         element.classList.add("switchButtonActive");
         element.innerHTML="Listening here";
     }
@@ -14,7 +14,7 @@ function ListeningSwitch(element)
     {
         listening = false;
         element.classList.remove("switchButtonActive")
-        element.classList.add("switchButton");
+        element.classList.add("switchButtonUnactive");
         element.innerHTML = "Listening there";
     }
 }
@@ -24,7 +24,7 @@ function FollowingSwitch(element)
     if (following == false)
     {
         following = true;
-        element.classList.remove("switchButton")
+        element.classList.remove("switchButtonUnactive")
         element.classList.add("switchButtonActive")
         element.innerHTML = "Following";
     }
@@ -32,7 +32,7 @@ function FollowingSwitch(element)
     {
         following = false;
         element.classList.remove("switchButtonActive")
-        element.classList.add("switchButton")
+        element.classList.add("switchButtonUnactive")
         element.innerHTML = "Not following";
     }
 }

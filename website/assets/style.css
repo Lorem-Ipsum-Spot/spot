@@ -6,15 +6,36 @@ body
 
 #buttonsDiv
 {
-    margin: auto
+    position: fixed;
+    margin: auto;
+    left: 5%;
+    right: 5%;
+    top: 15%;
+    bottom: 15%;
+
+    display: grid;
+    grid-template-columns: 1fr 1fr 2fr;
+    column-gap: 2%;
+
+    background-color: blue;
 }
 
 .switchButton
+{ 
+    color: white;
+    border: hidden 0px;
+
+    width: 1fr;
+    aspect-ratio: 1/1;
+    /*margin-top*/
+}
+
+.switchButtonUnactive
 {
     background-color: red;
 }
 
 .switchButtonActive
 {
-    background-color: blue;
+    background-color: green;
 }
