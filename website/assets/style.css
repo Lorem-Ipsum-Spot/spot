@@ -1,9 +1,20 @@
 body
 {
     background-color: black;
+    font-family: tahoma;
 }
 
-#buttonListening
+#buttonsDiv
+{
+    margin: auto
+}
+
+.switchButton
 {
     background-color: red;
+}
+
+.switchButtonActive
+{
+    background-color: blue;
 }
