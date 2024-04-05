@@ -16,6 +16,8 @@ Instalace závislostí (do virtuálního protředí):
 pip install -r requirements.txt
 ```
 
+Recognition model download (přejmenovat na "model" a dát do rootu projektu): [VOSK Models - Czech](https://alphacephei.com/vosk/models/vosk-model-small-cs-0.4-rhasspy.zip)
+
 ## Spuštění
 
 ```txt
