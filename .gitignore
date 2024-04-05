@@ -162,3 +162,5 @@ cython_debug/
 
 /credentials.txt
 .DS_STORE
+/model
+*.zip

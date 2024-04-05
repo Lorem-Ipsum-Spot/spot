@@ -16,7 +16,16 @@ Instalace závislostí (do virtuálního protředí):
 pip install -r requirements.txt
 ```
 
-Recognition model download (přejmenovat na "model" a dát do rootu projektu): [VOSK Models - Czech](https://alphacephei.com/vosk/models/vosk-model-small-cs-0.4-rhasspy.zip)
+Instalace modelu na rozpoznání řeči (přejmenovat na "model" a dát do rootu projektu):
+[VOSK Models - Czech](https://alphacephei.com/vosk/models/vosk-model-small-cs-0.4-rhasspy.zip)
+
+Např. na Linuxu:
+
+```sh
+curl "https://alphacephei.com/vosk/models/vosk-model-small-cs-0.4-rhasspy.zip" -o model.zip
+unzip model.zip
+mv -iv vosk-model-small-cs-0.4-rhasspy model
+```
 
 ## Spuštění
 
