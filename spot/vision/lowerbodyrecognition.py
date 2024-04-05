@@ -13,10 +13,10 @@ cascade_path = (
 clf = cv2.CascadeClassifier(str(cascade_path))
 
 
-def detect_faces(frame):
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+def detect_lowerbody(frame):
+    #gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     faces = clf.detectMultiScale(
-        gray,
+        frame,
         scaleFactor=1.1,
         minNeighbors=5,
         minSize=(30, 30),

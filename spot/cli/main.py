@@ -12,7 +12,9 @@ from spot.communication.estop import Estop
 from spot.cli.curses import run_curses_gui
 from spot.cli.server import run_http_server
 from spot.movement.move import Move
-from spot.vision.lowerbodyrecognition import body_recocnition
+from spot.vision.lowerbodyrecognition import detect_lowerbody
+from bosdyn.client.image import ImageClient, build_image_request
+from bosdyn.api import image_pb2
 
 
 
@@ -47,11 +49,10 @@ def main():
     estop_client = Estop(robot, options.timeout, "Estop NoGUI")
     print("Estop initialized")
 
-    state_client, command_client, lease_client = [
+    state_client, command_client, lease_client, image_client = [
         ensure_client(robot, client)
-        for client in (RobotStateClient, RobotCommandClient, LeaseClient)
+        for client in (RobotStateClient, RobotCommandClient, LeaseClient, ImageClient)
     ]
-    image_client = robot.ensure_client(options.image_service)
 
     def f():
         import time
@@ -61,14 +62,15 @@ def main():
         return run_curses_gui(estop_client, state_client)
 
     p = Process(target=f)
-    p.start()
+    p.start() 
 
-    run_http_server()
+    # TODO: run in background
+    # run_http_server()
 
     with LeaseKeepAlive(lease_client, must_acquire=True, return_at_exit=True):
         print("Powering on robot... This may take several seconds.")
-        robot.power_on(timeout_sec=20)
-        assert robot.is_powered_on(), "Robot power on failed."
+        # robot.power_on(timeout_sec=20)
+        # assert robot.is_powered_on(), "Robot power on failed."
         print("Robot powered on.")
     
         print("Creating movement controller")
@@ -87,10 +89,11 @@ def main():
 
 def main_event_loop(mover: Move, image_client):
     print("Commanding robot to stand...")
-    mover.stand()
+    # mover.stand()
     print("Robot standing.")
     time.sleep(3)
     print("STARTING")
+    pixel_format = image_pb2.Image.PixelFormat.PIXEL_FORMAT_GREYSCALE_U8
 
     '''
     mover.forward()
@@ -100,17 +103,21 @@ def main_event_loop(mover: Move, image_client):
     time.sleep(3)
     '''
     while True:
-        myFrame = image_client.list_image_sources()[0]
+        image_request = [
+            build_image_request("frontleft_fisheye_image", pixel_format=pixel_format)
+        ]
+        image_responses = image_client.get_image(image_request)
+        print(image_responses)
 
-        myArgument = body_recocnition(myFrame)
+        # myArgument = detect_lowerbody(image_responses[0])
 
-        match myArgument:
-            case -1:
-                mover.rotate_left()
-            case 0:
-                pass
-            case 1:
-                mover.rotate_right()
+        # match myArgument:
+        #     case -1:
+        #         mover.rotate_left()
+        #     case 0:
+        #         pass
+        #     case 1:
+        #         mover.rotate_right()
 
 
 
