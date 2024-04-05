@@ -12,6 +12,8 @@ from spot.communication.estop import Estop
 from spot.cli.curses import run_curses_gui
 from spot.cli.server import run_http_server
 from spot.movement.move import Move
+from spot.vision.lowerbodyrecognition import body_recocnition
+
 
 
 def main():
@@ -49,6 +51,7 @@ def main():
         ensure_client(robot, client)
         for client in (RobotStateClient, RobotCommandClient, LeaseClient)
     ]
+    image_client = robot.ensure_client(options.image_service)
 
     def f():
         import time
@@ -62,37 +65,53 @@ def main():
 
     run_http_server()
 
-    # with LeaseKeepAlive(lease_client, must_acquire=True, return_at_exit=True):
-    #     print("Powering on robot... This may take several seconds.")
-    #     robot.power_on(timeout_sec=20)
-    #     assert robot.is_powered_on(), "Robot power on failed."
-    #     print("Robot powered on.")
-    #
-    #     print("Creating movement controller")
-    #     mover = Move(command_client)
-    #     print("Movement controller ready")
-    #
-    #     example_movement_sequence(mover)
-    #
-    #     print("Powering off...")
-    #     robot.power_off(cut_immediately=False, timeout_sec=20)
-    #     assert not robot.is_powered_on(), "Robot power off failed."
-    #     print("Robot safely powered off.")
+    with LeaseKeepAlive(lease_client, must_acquire=True, return_at_exit=True):
+        print("Powering on robot... This may take several seconds.")
+        robot.power_on(timeout_sec=20)
+        assert robot.is_powered_on(), "Robot power on failed."
+        print("Robot powered on.")
+    
+        print("Creating movement controller")
+        mover = Move(command_client)
+        print("Movement controller ready")
+    
+        main_event_loop(mover, image_client)
+    
+        print("Powering off...")
+        robot.power_off(cut_immediately=False, timeout_sec=20)
+        assert not robot.is_powered_on(), "Robot power off failed."
+        print("Robot safely powered off.")
 
     p.join()
 
 
-def example_movement_sequence(mover: Move):
+def main_event_loop(mover: Move, image_client):
     print("Commanding robot to stand...")
     mover.stand()
     print("Robot standing.")
     time.sleep(3)
+    print("STARTING")
 
+    '''
     mover.forward()
     time.sleep(3)
 
     mover.backward()
     time.sleep(3)
+    '''
+    while True:
+        myFrame = image_client.list_image_sources()[0]
+
+        myArgument = body_recocnition(myFrame)
+
+        match myArgument:
+            case -1:
+                mover.rotate_left()
+            case 0:
+                pass
+            case 1:
+                mover.rotate_right()
+
 
 
 def ensure_client(robot, client):
