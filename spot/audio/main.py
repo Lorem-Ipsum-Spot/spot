@@ -62,7 +62,7 @@ def listen_microphone():
     try:
         # Recognize speech using Google Speech Recognition with Czech language
         # ignore the error, the library is poorly type hinted
-        command = recognizer.recognize_google(audio, language="cs-CZ").lower()
+        command = recognizer.recognize_vosk(audio, language="cs-CZ").lower()
         print("Řekli jste:", command)
         process_command(command)
     except sr.UnknownValueError:
