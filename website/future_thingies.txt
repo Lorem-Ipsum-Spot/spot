@@ -1,0 +1,9 @@
+    BUTTONS         JSON label      JSON value
+    Forward         x               1
+    Back            x               -1
+    Left            y               -1
+    Right           y               1
+    Up              z               1
+    Down            z               -1
+    FollowMe        FollowMe        True/False
+    MicOn/Off      ???             ???
