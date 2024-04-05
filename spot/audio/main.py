@@ -67,11 +67,9 @@ def listen_microphone():
     except sr.UnknownValueError:
         print("Nerozumím zvuku")
     except sr.RequestError as e:
-        print(
-            "Nelze požádat o výsledky služby Google Speech Recognition; {0}".format(e)
-        )
 
 
 # Continuous listening loop
 while True:
     listen_microphone()
+        print(f"Nelze požádat o výsledky služby Google Speech Recognition; {e}")
