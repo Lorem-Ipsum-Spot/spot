@@ -8,10 +8,10 @@ from bosdyn.client.lease import LeaseClient, LeaseKeepAlive
 from bosdyn.client.robot_command import RobotCommandClient
 from bosdyn.client.robot_state import RobotStateClient
 
-from spot.cli.curses import run_curses_gui
 from spot.communication.estop import Estop
+from spot.cli.curses import run_curses_gui
+from spot.cli.server import run_http_server
 from spot.movement.move import Move
-
 
 def main():
     parser = ArgumentParser()
@@ -61,7 +61,11 @@ def main():
     # p.join()
     #
     # print("program")
+    
+    run_http_server()
 
+    print("program")
+    
     with LeaseKeepAlive(lease_client, must_acquire=True, return_at_exit=True):
         example_movement_sequence(robot, state_client, command_client)
 
@@ -101,7 +105,7 @@ def ensure_client(robot, client):
     print(f"{client.__name__} initialized")
 
     return result
-
+ 
 
 def load_credential_from_file(credentials):
     with open(credentials, "r") as file:
