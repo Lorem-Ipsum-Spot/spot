@@ -27,7 +27,8 @@ body
 
     width: 1fr;
     aspect-ratio: 1/1;
-    /*margin-top*/
+    margin-top: auto;
+    margin-bottom: auto;
 }
 
 .switchButtonUnactive
