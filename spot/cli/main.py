@@ -16,7 +16,7 @@ from spot.vision.lowerbodyrecognition import detect_lowerbody
 from bosdyn.client.image import ImageClient, build_image_request
 from bosdyn.api import image_pb2
 
-
+from spot.audio.main import listen_microphone
 
 def main():
     parser = ArgumentParser()
@@ -118,6 +118,28 @@ def main_event_loop(mover: Move, image_client):
         #         pass
         #     case 1:
         #         mover.rotate_right()
+
+        command:str = listen_microphone()
+
+        switch = {
+            "dopředu": mover.forward,
+            "dozadu": mover.backward,
+            "sedni": mover.sit,
+            "lehni": mover.lay,
+            "následuj": follow(mover),
+        }
+        # Get the function corresponding to the command, or default to command_not_recognized
+        command_function = switch.get(command, command_not_recognized)
+        # Execute the function
+        command_function()
+
+
+def follow(mover:Move):
+    pass
+
+
+def command_not_recognized():
+    print("Příkaz nerozpoznán")
 
 
 

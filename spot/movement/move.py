@@ -11,23 +11,6 @@ from bosdyn.client.frame_helpers import (BODY_FRAME_NAME, ODOM_FRAME_NAME, VISIO
 class Move:
     def __init__(self, command_client):
         self.command_client = command_client
-        
-    def __execute_command(self, command, end_time=None):
-        self.__VELOCITY_BASE_SPEED = 0.5
-        self.__VELOCITY_BASE_ANGULAR = 0.8
-        self.__VELOCITY_CMD_DURATION = 0.6
-
-        self.command_client.robot_command(command, end_time)
-
-
-    def __execute_velocity(self, v_x=0.0, v_y=0.0, v_rot=0.0):
-        self.__execute_command(
-            RobotCommandBuilder.synchro_velocity_command(
-                v_x=v_x,
-                v_y=v_y,
-                v_rot=v_rot
-            ),
-            time.time() + self.__VELOCITY_CMD_DURATION)
 
     def sit(self):
         self.__execute_command(RobotCommandBuilder.synchro_sit_command())
@@ -52,16 +35,6 @@ class Move:
 
     def rotate_right(self):
         self.__execute_velocity(v_rot=-self.__VELOCITY_BASE_ANGULAR)
-    '''
-    def __init__(self, commandClient) -> None:
-        self.command_client = commandClient
-
-    def stand(self, body_height=0.1, yaw=0.0, roll=0.0, pitch=0.0):
-        footprint_R_body = EulerZXY(yaw, roll, pitch)
-        cmd = RobotCommandBuilder.synchro_stand_command(footprint_R_body=footprint_R_body, body_height = body_height)
-        self.command_client.robot_command(cmd)
-    def standUp(self, body_height=0.1,):
-        self.stand(body_height)
 
     def turnLeft(self, angle = math.pi/2):
         self.stand(yaw = angle)
@@ -69,12 +42,36 @@ class Move:
     def turnRight(self, angle = -math.pi/2):
         self.stand(yaw = angle)
 
-    def walk(self):
-        print("sss")
+    def lay(self):
         pass
+    
     '''
+    def stand(self, body_height=0.1, yaw=0.0, roll=0.0, pitch=0.0):
+        footprint_R_body = EulerZXY(yaw, roll, pitch)
+        cmd = RobotCommandBuilder.synchro_stand_command(footprint_R_body=footprint_R_body, body_height = body_height)
+        self.command_client.robot_command(cmd)
+    def standUp(self, body_height=0.1,):
+        self.stand(body_height)
+    '''
+        
 
 
+    def __execute_command(self, command, end_time=None):
+        self.__VELOCITY_BASE_SPEED = 0.5
+        self.__VELOCITY_BASE_ANGULAR = 0.8
+        self.__VELOCITY_CMD_DURATION = 0.6
+
+        self.command_client.robot_command(command, end_time)
+
+
+    def __execute_velocity(self, v_x=0.0, v_y=0.0, v_rot=0.0):
+        self.__execute_command(
+            RobotCommandBuilder.synchro_velocity_command(
+                v_x=v_x,
+                v_y=v_y,
+                v_rot=v_rot
+            ),
+            time.time() + self.__VELOCITY_CMD_DURATION)
 
 
 
