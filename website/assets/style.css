@@ -14,7 +14,7 @@ body
     bottom: 15%;
 
     display: grid;
-    grid-template-columns: 1fr 1fr 2fr;
+    grid-template-columns: 1fr 1fr 1fr 3fr;
     column-gap: 2%;
 
     background-color: blue;
@@ -41,7 +41,52 @@ body
     background-color: green;
 }
 
+#buttonStop
+{
+    background-color: red;
+}
+
+#movementDiv
+{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    grid-template-areas: ". buttonForward buttonUp" "buttonLeft . buttonRight" ". buttonBackward buttonDown";
+    grid-gap: 1%;
+
+}
+
 .movementButton
 {
     background-color: blueviolet;
+}
+
+#buttonForward
+{
+grid-area: buttonForward;
+}
+
+#buttonBackward
+{
+grid-area: buttonBackward;
+}
+
+#buttonLeft
+{
+grid-area: buttonLeft;
+}
+
+#buttonRight
+{
+grid-area: buttonRight;
+}
+
+#buttonUp
+{
+    grid-area: buttonUp;
+}
+
+#buttonDown
+{
+    grid-area: buttonDown;
 }
