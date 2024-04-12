@@ -61,3 +61,27 @@ document.getElementById("buttonForward").addEventListener('click', () =>{
     url = "/cli/server.py";
     postData(url,data);
     });
+
+async function postData(url = '/api', data = {}){
+    const response = await fetch(url,{
+        method: 'POST',
+        mode: 'cors',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        redirect: 'follow',
+        referrerPolicy: 'no-referrer',
+        body: JSON.stringify(data),
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Response from server:', data);
+        // Handle the data as needed (e.g., update UI, process data)
+    })
+    .catch(error => {
+        console.error('Error fetching data:', error);
+        // Handle errors (e.g., show an error message)
+    });
+}
