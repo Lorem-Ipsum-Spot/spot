@@ -12,12 +12,13 @@ from spot.communication.estop import Estop
 from spot.cli.curses import run_curses_gui
 from spot.cli.server import run_http_server
 from spot.movement.move import Move
-from spot.vision.lowerbodyrecognition import detect_lowerbody
+from spot.vision.lowerbodyrecognition import detect_lowerbody, Direction
 from bosdyn.client.image import ImageClient, build_image_request
 from bosdyn.api import image_pb2
 
 from spot.audio.main import listen_microphone
 PIXEL_FORMAT = image_pb2.Image.PixelFormat.PIXEL_FORMAT_GREYSCALE_U8
+
 
 def main():
     parser = ArgumentParser()
@@ -133,8 +134,7 @@ def main_event_loop(mover: Move, image_client):
 
 
 def follow(mover:Move, image_client):
-    still_going = True
-    while still_going:
+    while True:
         command:str = listen_microphone()
         if command == "stuj":
             print("zastaven")
@@ -146,13 +146,13 @@ def follow(mover:Move, image_client):
         myArgument = detect_lowerbody(image_responses[0])
 
         match myArgument:
-            case -1:
-                still_going = False
-            case 0:
+            case None:
+                return
+            case Direction.LEFT:
                 mover.rotate_left()
-            case 1:
+            case Direction.RIGHT:
                 mover.rotate_right()
-            case 2:
+            case Direction.CENTER:
                 mover.forward()
 
 
