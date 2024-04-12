@@ -1,21 +1,33 @@
-import cv2
 import pathlib
+from enum import IntEnum
 
-import numpy as np
+import cv2
+from cv2.typing import MatLike
 
+detection_type = "lowerbody"
+detection_type = "frontalface_default"
+detection_type = "eye"
 
-# cascade_path = pathlib.Path(cv2.__file__).parent.absolute( )/ "data/haarcascade_eye.xml"
 cascade_path = (
-    pathlib.Path(cv2.__file__).parent.absolute() / "data/haarcascade_lowerbody.xml"
+    pathlib.Path(cv2.__file__).parent.absolute()
+    / "data"
+    / f"haarcascade_{detection_type}.xml"
 )
-# cascade_path = pathlib.Path(cv2.__file__).parent.absolute( )/ "data/haarcascade_frontalface_default.xml"
 
 clf = cv2.CascadeClassifier(str(cascade_path))
 
 
-def detect_lowerbody(frame) ->int:
-    #gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    faces = clf.detectMultiScale(
+class Direction(IntEnum):
+    LEFT = -1
+    CENTER = 0
+    RIGHT = 1
+
+
+def detect_lowerbody(frame: MatLike) -> Direction | None:
+    # gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+    # Detect areas
+    areas = clf.detectMultiScale(
         frame,
         scaleFactor=1.1,
         minNeighbors=5,
@@ -23,31 +35,26 @@ def detect_lowerbody(frame) ->int:
         flags=cv2.CASCADE_SCALE_IMAGE,
     )
 
-    areas = [w * h for x, y, w, h in faces]
-    if len(areas) > 0:
-        i_biggest:int = int(np.argmax(areas))
-        biggest = faces[i_biggest]
-        x, y, width, height = biggest
-        cv2.rectangle(frame, (x, y), (x + width, y + height), (255, 245, 0), 2)
-        x_center = x + width // 2
+    if not areas:
+        return None
+
+    # Find the biggest area
+    x, y, width, height = max(areas, key=lambda x: x[2] * x[3])
+
+    # Draw a rectangle around the area
+    cv2.rectangle(frame, (x, y), (x + width, y + height), (255, 245, 0), 2)
+
+    x_center = x + width // 2
+    third_width = frame.shape[1] // 3
+
+    if x_center < third_width:
+        return Direction.LEFT
+
+    if x_center > third_width * 2:
+        return Direction.RIGHT
+
+    return None if target_reached() else Direction.CENTER
 
 
-        '''
-        -1 => end following (target reached)
-        0 => turn left
-        1 => turn right
-        2 => go forward
-        '''
-
-        if x_center < (frame.shape[1] // 3):
-            return 0
-        elif x_center > (frame.shape[1] // 3) and x_center < frame.shape[1] // 3 * 2:
-            return 2
-        elif target_reached():
-            return -1
-        else:
-            return 1
-    return 0
-
-def target_reached()->bool:
+def target_reached() -> bool:
     return False
