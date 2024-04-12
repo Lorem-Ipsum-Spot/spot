@@ -53,3 +53,11 @@ function MovementButtonUp(element,direction)
 {
     direction[Math.abs(direction)-1]=0
 }
+
+document.getElementById("buttonForward").addEventListener('click', () =>{
+    data = {
+        x: "-1",
+    }
+    url = "/cli/server.py";
+    postData(url,data);
+    });
