@@ -17,6 +17,7 @@ from bosdyn.client.image import ImageClient, build_image_request
 from bosdyn.api import image_pb2
 
 from spot.audio.main import listen_microphone
+PIXEL_FORMAT = image_pb2.Image.PixelFormat.PIXEL_FORMAT_GREYSCALE_U8
 
 def main():
     parser = ArgumentParser()
@@ -93,7 +94,7 @@ def main_event_loop(mover: Move, image_client):
     print("Robot standing.")
     time.sleep(3)
     print("STARTING")
-    pixel_format = image_pb2.Image.PixelFormat.PIXEL_FORMAT_GREYSCALE_U8
+    
 
     '''
     mover.forward()
@@ -103,11 +104,8 @@ def main_event_loop(mover: Move, image_client):
     time.sleep(3)
     '''
     while True:
-        image_request = [
-            build_image_request("frontleft_fisheye_image", pixel_format=pixel_format)
-        ]
-        image_responses = image_client.get_image(image_request)
-        print(image_responses)
+        
+        #print(image_responses)
 
         # myArgument = detect_lowerbody(image_responses[0])
 
@@ -126,7 +124,7 @@ def main_event_loop(mover: Move, image_client):
             "dozadu": mover.backward,
             "sedni": mover.sit,
             "lehni": mover.lay,
-            "následuj": follow(mover),
+            "následuj": follow(mover, image_client),
         }
         # Get the function corresponding to the command, or default to command_not_recognized
         command_function = switch.get(command, command_not_recognized)
@@ -134,8 +132,28 @@ def main_event_loop(mover: Move, image_client):
         command_function()
 
 
-def follow(mover:Move):
-    pass
+def follow(mover:Move, image_client):
+    still_going = True
+    while still_going:
+        command:str = listen_microphone()
+        if command == "stuj":
+            print("zastaven")
+            return
+
+        image_request = [build_image_request("frontleft_fisheye_image", pixel_format=PIXEL_FORMAT)]
+        image_responses = image_client.get_image(image_request)
+
+        myArgument = detect_lowerbody(image_responses[0])
+
+        match myArgument:
+            case -1:
+                still_going = False
+            case 0:
+                mover.rotate_left()
+            case 1:
+                mover.rotate_right()
+            case 2:
+                mover.forward()
 
 
 def command_not_recognized():

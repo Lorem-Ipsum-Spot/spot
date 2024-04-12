@@ -13,7 +13,7 @@ cascade_path = (
 clf = cv2.CascadeClassifier(str(cascade_path))
 
 
-def detect_lowerbody(frame):
+def detect_lowerbody(frame) ->int:
     #gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     faces = clf.detectMultiScale(
         frame,
@@ -25,16 +25,29 @@ def detect_lowerbody(frame):
 
     areas = [w * h for x, y, w, h in faces]
     if len(areas) > 0:
-        i_biggest = np.argmax(areas)
+        i_biggest:int = int(np.argmax(areas))
         biggest = faces[i_biggest]
         x, y, width, height = biggest
         cv2.rectangle(frame, (x, y), (x + width, y + height), (255, 245, 0), 2)
         x_center = x + width // 2
 
+
+        '''
+        -1 => end following (target reached)
+        0 => turn left
+        1 => turn right
+        2 => go forward
+        '''
+
         if x_center < (frame.shape[1] // 3):
-            return -1
-        elif x_center > (frame.shape[1] // 3) and x_center < frame.shape[1] // 3 * 2:
             return 0
+        elif x_center > (frame.shape[1] // 3) and x_center < frame.shape[1] // 3 * 2:
+            return 2
+        elif target_reached():
+            return -1
         else:
             return 1
     return 0
+
+def target_reached()->bool:
+    return False
