@@ -15,7 +15,8 @@ def run_http_server():
 def handle_post_request():
     if request.method == 'POST':
         data = request.get_json()
-        if data.get("x") == "1":
+
+        if data.get("dir") == [0,0,0]:
             data = {"message": "Positive answer from server"}
             return jsonify(data), 200
         else:
