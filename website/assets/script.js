@@ -51,5 +51,5 @@ function MovementButtonDown(element,direction)
 
 function MovementButtonUp(element,direction)
 {
-    direction[Math.abs(direction)-1]=0
+    directions[Math.abs(direction)-1]=0
 }
