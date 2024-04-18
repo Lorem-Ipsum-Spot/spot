@@ -11,7 +11,7 @@
 <div id="buttonsDiv">
     <button id="buttonListening" class="switchButton switchButtonUnactive" onclick="ListeningSwitch(this)">Listening there</button>
     <button id="buttonFollowing" class="switchButton switchButtonUnactive" onclick="FollowingSwitch(this)">Not following</button>
-    <button id="buttonStop" class="switchButton">Stop</button>
+    <button id="buttonStop" class="switchButton" onclick="stopSpot()">Stop</button>
     <div id="movementDiv" style="background-color: white;">
         <button id="buttonForward" onmousedown ="MovementButtonDown(self,1)" onmouseup="MovementButtonUp(self,1)" class="movementButton">Forward</button>
         <button id="buttonBackward" onmousedown ="MovementButtonDown(self,-1)" onmouseup="MovementButtonUp(self,-1)" class="movementButton">Backward</button>
