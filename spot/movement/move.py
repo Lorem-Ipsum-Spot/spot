@@ -43,7 +43,7 @@ class Move:
         self.stand(yaw = angle)
 
     def lay(self):
-        pass
+        self.__execute_command(RobotCommandBuilder.synchro_sit_command())
     
     '''
     def stand(self, body_height=0.1, yaw=0.0, roll=0.0, pitch=0.0):

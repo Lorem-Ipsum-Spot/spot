@@ -123,8 +123,9 @@ def main_event_loop(mover: Move, image_client):
         switch = {
             "dopředu": mover.forward,
             "dozadu": mover.backward,
-            "sedni": mover.sit,
+            "sedni": mover.lay,
             "lehni": mover.lay,
+            "stoupni":mover.stand,
             "následuj": follow(mover, image_client),
         }
         # Get the function corresponding to the command, or default to command_not_recognized
