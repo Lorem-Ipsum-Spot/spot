@@ -94,11 +94,22 @@ body
 
 .movementButton
 {
+    font-size: 1em;
+    border: solid 5px var(--colorprimary);
     background-color: transparent;
     color: var(--colorprimary);
-    font-size: 1em;
+}
 
-    border: solid 5px var(--colorprimary);
+.movementButtonActive
+{
+    background-color: var(--colorprimary);
+    color: white;
+}
+
+.movementButtonUnactive
+{
+    background-color: transparent;
+    color: var(--colorprimary);
 }
 
 #buttonForward
