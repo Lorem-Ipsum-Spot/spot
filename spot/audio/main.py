@@ -3,7 +3,7 @@ import speech_recognition as sr  # type: ignore
 # Initialize the recognizer
 recognizer = sr.Recognizer()
 
-
+'''
 # Function to process recognized commands
 def process_command(command):
     if "noze" in command:
@@ -51,9 +51,9 @@ def follow():
 def command_not_recognized():
     print("Příkaz nerozpoznán")
 
-
+'''
 # Function to listen to microphone input
-def listen_microphone():
+def listen_microphone()->str:
     with sr.Microphone() as source:
         print("Řekněte něco:")
         recognizer.adjust_for_ambient_noise(source)  # Adjust for noise
@@ -64,8 +64,9 @@ def listen_microphone():
         # ignore the error, the library is poorly type hinted
         command = recognizer.recognize_vosk(audio, language="cs-CZ").lower()
         print("Řekli jste:", command)
-        process_command(command)
+        return command #process_command(command)
     except sr.UnknownValueError:
         print("Nerozumím zvuku")
-    except sr.RequestError as e:
-        print(f"Nelze požádat o výsledky služby Google Speech Recognition; {e}")
+        return "nerozpoznan zvuk"
+    #except sr.RequestError as e:
+    #    print(f"Nelze požádat o výsledky služby Google Speech Recognition; {e}")
