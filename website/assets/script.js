@@ -1,23 +1,24 @@
 let listening = false;
 let following = false;
-let directions = [0,0,0]
+let directions = [0,0,0];
 
 function ListeningSwitch(element)
 {
     if (listening == false)
     {
         listening = true;
-        element.classList.remove("switchButtonUnactive")
+        element.classList.remove("switchButtonUnactive");
         element.classList.add("switchButtonActive");
         element.innerHTML="Listening here";
     }
     else
     {
         listening = false;
-        element.classList.remove("switchButtonActive")
+        element.classList.remove("switchButtonActive");
         element.classList.add("switchButtonUnactive");
         element.innerHTML = "Listening there";
     }
+    sendListeningStatus(listening);
 }
 
 function FollowingSwitch(element)
@@ -25,17 +26,18 @@ function FollowingSwitch(element)
     if (following == false)
     {
         following = true;
-        element.classList.remove("switchButtonUnactive")
-        element.classList.add("switchButtonActive")
+        element.classList.remove("switchButtonUnactive");
+        element.classList.add("switchButtonActive");
         element.innerHTML = "Following";
     }
     else
     {
         following = false;
-        element.classList.remove("switchButtonActive")
-        element.classList.add("switchButtonUnactive")
+        element.classList.remove("switchButtonActive");
+        element.classList.add("switchButtonUnactive");
         element.innerHTML = "Not following";
     }
+    sendFollowingStatus(following);
 }
 
 function MovementButtonDown(element,direction)
@@ -46,10 +48,12 @@ function MovementButtonDown(element,direction)
     minus direction meaning: 1 forward / -1 backward
     */
 
-    directions[Math.abs(direction)-1]=(Math.sign(direction))
+    directions[Math.abs(direction)-1]=(Math.sign(direction));
+    sendMovementVector(directions);
 }
 
 function MovementButtonUp(element,direction)
 {
-    directions[Math.abs(direction)-1]=0
+    directions[Math.abs(direction)-1]=0;
+    sendMovementVector(directions);
 }

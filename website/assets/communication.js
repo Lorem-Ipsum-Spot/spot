@@ -1,19 +1,10 @@
 
-setInterval(sendAll, 1000);
-
-// every time period send info about buttons push-status in the moment
-async function sendAll(){
-    sendMovementVector();
-    sendFollowingStatus();
-    sendListeningStatus();
-}
-
 // send vector [x,y,z] to server - called periodically.
-async function sendMovementVector(){
+async function sendMovementVector(dirs){
     const url = "/api/movement";
 
     const data = {
-        dir : directions,
+        dir : dirs,
     }
 
     const response = await fetch(url,{
@@ -41,11 +32,11 @@ async function sendMovementVector(){
 }
 
 // send bool following to server - called periodically.
-async function sendFollowingStatus(){
+async function sendFollowingStatus(flwStatus){
     const url = "/api/followingStatus";
 
     const data = {
-        follow : following,
+        follow : flwStatus,
     }
 
     const response = await fetch(url,{
@@ -73,11 +64,11 @@ async function sendFollowingStatus(){
 }
 
 // send bool listening to server - called periodically.
-async function sendListeningStatus(){
+async function sendListeningStatus(lstStatus){
     const url = "/api/listeningStatus";
 
     const data = {
-        listen : listening,
+        listen : lstStatus,
     }
 
     const response = await fetch(url,{
