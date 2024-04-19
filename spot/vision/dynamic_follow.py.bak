@@ -6,6 +6,7 @@ from bosdyn.api import image_pb2, geometry_pb2
 from bosdyn.client.robot_command import RobotCommandClient, RobotCommandBuilder
 from bosdyn.client.frame_helpers import BODY_FRAME_NAME
 import bosdyn.client.util
+import pathlib
 
 # Konfigurace připojení k robotu
 ROBOT_IP = '192.168.50.3'  # Zadejte IP adresu robota
@@ -22,7 +23,7 @@ robot_command_client = robot.ensure_client(RobotCommandClient.default_service_na
 # Nastavení detektoru obličejů
 #cascade_path = "/path/to/haarcascade_frontalface_default.xml"  # Absolutní cesta k souboru XML
 cascade_path = pathlib.Path(cv2.__file__).parent.absolute( )/ "data/haarcascade_lowerbody.xml"
-clf = cv2.CascadeClassifier(cascade_path)
+clf = cv2.CascadeClassifier(str(cascade_path))
 
 # Parametry kamery (upravit podle vaší kamery)
 focal_length = 620  # Příklad fokální délky

@@ -7,17 +7,19 @@ from bosdyn.client import util as bosdyn_util
 from bosdyn.client.lease import LeaseClient, LeaseKeepAlive
 from bosdyn.client.robot_command import RobotCommandClient
 from bosdyn.client.robot_state import RobotStateClient
+from bosdyn.client.gripper_camera_param import GripperCameraParamClient
+
 
 from spot.communication.estop import Estop
 from spot.cli.curses import run_curses_gui
 from spot.cli.server import run_http_server
 from spot.movement.move import Move
-from spot.vision.lowerbodyrecognition import detect_lowerbody, Direction
 from bosdyn.client.image import ImageClient, build_image_request
 from bosdyn.api import image_pb2
 
 from spot.audio.main import listen_microphone
-PIXEL_FORMAT = image_pb2.Image.PixelFormat.PIXEL_FORMAT_GREYSCALE_U8
+from spot.vision.get_image import get_complete_image
+from spot.vision.image_recognition import detect_lowerbody
 
 
 def main():
@@ -51,9 +53,21 @@ def main():
     estop_client = Estop(robot, options.timeout, "Estop NoGUI")
     print("Estop initialized")
 
-    state_client, command_client, lease_client, image_client = [
+    (
+        state_client,
+        command_client,
+        lease_client,
+        image_client,
+        gripper_camera_param_client,
+    ) = [
         ensure_client(robot, client)
-        for client in (RobotStateClient, RobotCommandClient, LeaseClient, ImageClient)
+        for client in (
+            RobotStateClient,
+            RobotCommandClient,
+            LeaseClient,
+            ImageClient,
+            GripperCameraParamClient,
+        )
     ]
 
     def f():
@@ -64,7 +78,7 @@ def main():
         return run_curses_gui(estop_client, state_client)
 
     p = Process(target=f)
-    p.start() 
+    p.start()
 
     # TODO: run in background
     # run_http_server()
@@ -74,13 +88,13 @@ def main():
         # robot.power_on(timeout_sec=20)
         # assert robot.is_powered_on(), "Robot power on failed."
         print("Robot powered on.")
-    
+
         print("Creating movement controller")
         mover = Move(command_client)
         print("Movement controller ready")
-    
+
         main_event_loop(mover, image_client)
-    
+
         print("Powering off...")
         robot.power_off(cut_immediately=False, timeout_sec=20)
         assert not robot.is_powered_on(), "Robot power off failed."
@@ -95,37 +109,23 @@ def main_event_loop(mover: Move, image_client):
     print("Robot standing.")
     time.sleep(3)
     print("STARTING")
-    
 
-    '''
+    """
     mover.forward()
     time.sleep(3)
 
     mover.backward()
     time.sleep(3)
-    '''
+    """
     while True:
-        
-        #print(image_responses)
-
-        # myArgument = detect_lowerbody(image_responses[0])
-
-        # match myArgument:
-        #     case -1:
-        #         mover.rotate_left()
-        #     case 0:
-        #         pass
-        #     case 1:
-        #         mover.rotate_right()
-
-        command:str = listen_microphone()
+        command: str = listen_microphone()
 
         switch = {
             "dopředu": mover.forward,
             "dozadu": mover.backward,
             "sedni": mover.lay,
             "lehni": mover.lay,
-            "stoupni":mover.stand,
+            "stoupni": mover.stand,
             "následuj": follow(mover, image_client),
         }
         # Get the function corresponding to the command, or default to command_not_recognized
@@ -134,32 +134,21 @@ def main_event_loop(mover: Move, image_client):
         command_function()
 
 
-def follow(mover:Move, image_client):
+def follow(mover: Move, image_client):
     while True:
-        command:str = listen_microphone()
+        command: str = listen_microphone()
         if command == "stuj":
             print("zastaven")
             return
 
-        image_request = [build_image_request("frontleft_fisheye_image", pixel_format=PIXEL_FORMAT)]
-        image_responses = image_client.get_image(image_request)
-
-        myArgument = detect_lowerbody(image_responses[0])
-
-        match myArgument:
-            case None:
-                return
-            case Direction.LEFT:
-                mover.rotate_left()
-            case Direction.RIGHT:
-                mover.rotate_right()
-            case Direction.CENTER:
-                mover.forward()
+        frame = get_complete_image(image_client)  # TODO try buildin solution
+        destination = detect_lowerbody(frame)
+        if destination is not None:
+            mover.move_to_destination(destination)
 
 
 def command_not_recognized():
     print("Příkaz nerozpoznán")
-
 
 
 def ensure_client(robot, client):
