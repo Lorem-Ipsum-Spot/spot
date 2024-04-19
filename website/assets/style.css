@@ -7,24 +7,50 @@ body
 #buttonsDiv
 {
     position: fixed;
-    margin: auto;
-    left: 5%;
-    right: 5%;
-    top: 15%;
-    bottom: 15%;
+    width:100vw;
+    max-height: 100vh;
+    top:50%;
+    transform: translate(0,-50%);
+    left:0;
+    aspect-ratio: 2/1;
 
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 3fr;
+    grid-template-columns: 1fr 1fr;
     column-gap: 2%;
 
     background-color: blue;
 }
 
+#switchDiv
+{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    grid-template-areas: "buttonListening buttonFollowing" "buttonStop .";
+}
+
+#buttonListening
+{
+    grid-area: buttonListening;
+}
+
+#buttonFollowing
+{
+    grid-area: buttonFollowing;
+}
+
+#buttonStop
+{
+    grid-area: buttonStop;
+}
+
+
 .switchButton
 { 
     color: white;
     border: hidden 0px;
-    aspect-ratio: 1/1;
+    width: auto;
+    height: 100%;
     margin-top: auto;
     margin-bottom: auto;
 }
@@ -87,4 +113,13 @@ grid-area: buttonRight;
 #buttonDown
 {
     grid-area: buttonDown;
+}
+
+@media (orientation: portrait) {
+    #buttonsDiv
+    {   
+        grid-template-columns: None;
+        grid-template-rows: 1fr 1fr;
+        aspect-ratio: 1/2;
+    }
 }

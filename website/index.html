@@ -7,18 +7,49 @@
     <link rel="stylesheet" href="assets/style.css"/>
 </head>
 <body>
-<h1 style="color: white;">Spot App</h1>
 <div id="buttonsDiv">
-    <button id="buttonListening" class="switchButton switchButtonUnactive" onclick="ListeningSwitch(this)">Listening there</button>
-    <button id="buttonFollowing" class="switchButton switchButtonUnactive" onclick="FollowingSwitch(this)">Not following</button>
-    <button id="buttonStop" class="switchButton" onclick="stopSpot()">Stop</button>
+    <div id="switchDiv">
+        <button id="buttonListening" class="switchButton switchButtonUnactive" onclick="ListeningSwitch(this)">Listening there</button>
+        <button id="buttonFollowing" class="switchButton switchButtonUnactive" onclick="FollowingSwitch(this)">Not following</button>
+        <button id="buttonStop" class="switchButton" onclick="stopSpot()">Stop</button>
+    </div>
     <div id="movementDiv" style="background-color: white;">
-        <button id="buttonForward" onmousedown ="MovementButtonDown(self,1)" onmouseup="MovementButtonUp(self,1)" class="movementButton">Forward</button>
-        <button id="buttonBackward" onmousedown ="MovementButtonDown(self,-1)" onmouseup="MovementButtonUp(self,-1)" class="movementButton">Backward</button>
-        <button id="buttonRight" onmousedown ="MovementButtonDown(self,2)" onmouseup="MovementButtonUp(self,2)" class="movementButton">Right</button>
-        <button id="buttonLeft" onmousedown ="MovementButtonDown(self,-2)" onmouseup="MovementButtonUp(self,-2)" class="movementButton">Left</button>
-        <button id="buttonUp" onmousedown ="MovementButtonDown(self,3)" onmouseup="MovementButtonUp(self,3)" class="movementButton">Up</button>
-        <button id="buttonDown" onmousedown ="MovementButtonDown(self,-3)" onmouseup="MovementButtonUp(self,-3)" class="movementButton">Down</button>
+        <button 
+            id="buttonForward"
+            onmousedown ="MovementButtonDown(self,1)"
+            onmouseup="MovementButtonUp(self,1)"
+            class="movementButton">
+            Forward</button>
+        <button
+            id="buttonBackward"
+            onmousedown ="MovementButtonDown(self,-1)"
+            onmouseup="MovementButtonUp(self,-1)"
+            class="movementButton">
+            Backward</button>
+        <button
+            id="buttonRight"
+            onmousedown ="MovementButtonDown(self,2)"
+            onmouseup="MovementButtonUp(self,2)"
+            class="movementButton">
+            Right</button>
+        <button
+            id="buttonLeft"
+            onmousedown ="MovementButtonDown(self,-2)"
+            onmouseup="MovementButtonUp(self,-2)"
+            class="movementButton">
+            Left</button>
+        <button
+            id="buttonUp"
+            onmousedown ="MovementButtonDown(self,3)"
+            onmouseup="MovementButtonUp(self,3)"
+            class="movementButton">
+            Up</button>
+        <button
+            id="buttonDown"
+            onmousedown ="MovementButtonDown(self,-3)"
+            onmouseup="MovementButtonUp(self,-3)"
+            class="movementButton">
+            Down</button>
     </div>
 </div>
 </body>
