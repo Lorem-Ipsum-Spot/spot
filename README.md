@@ -7,7 +7,7 @@ Semestrální práce z předmětu KIV/ZPP.
 Naklonovat repozitář:
 
 ```sh
-git clone https://github.com/https://github.com/Lorem-Ipsum-Spot/spot
+git clone https://github.com/Lorem-Ipsum-Spot/spot
 ```
 
 Instalace závislostí (do virtuálního protředí):
