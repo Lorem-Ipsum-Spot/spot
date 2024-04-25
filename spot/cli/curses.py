@@ -24,10 +24,6 @@ def run_curses_gui(estop_client, state_client):
         cleanup(msg)
         exit(0)
 
-    def sigint_handler(_sig, _frame):
-        """Exit the application on interrupt."""
-        clean_exit()
-
     def run_example():
         """Run the actual example with the curses screen display"""
         # Set up curses screen display to monitor for stop request
@@ -41,10 +37,6 @@ def run_curses_gui(estop_client, state_client):
         # If terminal cannot handle colors, do not proceed
         if not curses.has_colors():
             return
-
-        # Curses eats Ctrl-C keyboard input, but keep a SIGINT handler around for
-        # explicit kill signals outside of the program.
-        signal.signal(signal.SIGINT, sigint_handler)
 
         # Clear screen
         stdscr.clear()

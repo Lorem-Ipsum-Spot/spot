@@ -1,6 +1,6 @@
 import time
 from argparse import ArgumentParser
-from multiprocessing import Process
+from threading import Thread
 from typing import Callable, TypeVar
 
 import bosdyn.client
@@ -60,10 +60,8 @@ def main():
     image_client = ensure_client(ImageClient)
     # gripper_camera_param_client = ensure_client(GripperCameraParamClient)
 
-    ncurses_process = create_ncurses_process(estop_client, state_client)
-
-    # TODO: run in background
-    # run_http_server()
+    ncurses_thread = create_ncurses_thread(estop_client, state_client)
+    http_process = create_http_thread()
 
     with LeaseKeepAlive(lease_client, must_acquire=True, return_at_exit=True):
         print("Powering on robot... This may take several seconds.")
@@ -82,7 +80,8 @@ def main():
         assert not robot.is_powered_on(), "Robot power off failed."
         print("Robot safely powered off.")
 
-    ncurses_process.join()
+    ncurses_thread.join()
+    http_process.join()
 
 
 def main_event_loop(mover: Move, image_client):
@@ -148,13 +147,25 @@ def load_credentials_from_file(credentials: str) -> tuple[str, str]:
         return name, password
 
 
-def create_ncurses_process(estop: Estop, state: RobotStateClient) -> Process:
+def create_http_thread() -> Thread:
+    def wrapper():
+        print("Starting HTTP server")
+        time.sleep(1)
+        return run_http_server()
+
+    process = Thread(target=wrapper)
+    process.start()
+
+    return process
+
+
+def create_ncurses_thread(estop: Estop, state: RobotStateClient) -> Thread:
     def wrapper():
         print("Starting Curses GUI")
         time.sleep(3)
         return run_curses_gui(estop, state)
 
-    process = Process(target=wrapper)
+    process = Thread(target=wrapper)
     process.start()
 
     return process
