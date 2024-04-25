@@ -93,9 +93,6 @@ def main_event_loop(mover: Move, image_client):
     time.sleep(3)
     print("STARTING")
 
-    def command_not_recognized():
-        print("Příkaz nerozpoznán")
-
     def follow():
         while True:
             command = listen_microphone()
@@ -112,7 +109,7 @@ def main_event_loop(mover: Move, image_client):
     while True:
         command = listen_microphone()
 
-        switch = {
+        commands = {
             "dopředu": mover.forward,
             "dozadu": mover.backward,
             "sedni": mover.lay,
@@ -121,11 +118,11 @@ def main_event_loop(mover: Move, image_client):
             "následuj": follow,
         }
 
-        if command is None or command not in switch:
-            command_not_recognized()
+        if command is None or command not in commands:
+            print(f"Command not recognized: {command}")
             continue
 
-        switch[command]()
+        commands[command]()
 
 
 C = TypeVar("C", bound=BaseClient)
