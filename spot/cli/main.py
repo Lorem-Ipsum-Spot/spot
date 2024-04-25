@@ -1,8 +1,10 @@
 import time
 from argparse import ArgumentParser
 from multiprocessing import Process
+from typing import Callable, TypeVar
 
 import bosdyn.client
+from bosdyn.client import BaseClient, Robot
 from bosdyn.client.gripper_camera_param import GripperCameraParamClient
 from bosdyn.client.image import ImageClient
 from bosdyn.client import util as bosdyn_util
@@ -50,22 +52,7 @@ def main():
     estop_client = Estop(robot, options.timeout, "Estop NoGUI")
     print("Estop initialized")
 
-    (
-        state_client,
-        command_client,
-        lease_client,
-        image_client,
-        gripper_camera_param_client,
-    ) = [
-        ensure_client(robot, client)
-        for client in (
-            RobotStateClient,
-            RobotCommandClient,
-            LeaseClient,
-            ImageClient,
-            GripperCameraParamClient,
-        )
-    ]
+    ensure_client = robot_client_ensurer(robot)
 
     def f():
         import time
@@ -73,6 +60,11 @@ def main():
         print("Starting Curses GUI")
         time.sleep(1)
         return run_curses_gui(estop_client, state_client)
+    state_client = ensure_client(RobotStateClient)
+    command_client = ensure_client(RobotCommandClient)
+    lease_client = ensure_client(LeaseClient)
+    image_client = ensure_client(ImageClient)
+    # gripper_camera_param_client = ensure_client(GripperCameraParamClient)
 
     p = Process(target=f)
     p.start()
@@ -143,17 +135,20 @@ def follow(mover: Move, image_client):
         if destination is not None:
             mover.move_to_destination(destination)
 
+C = TypeVar("C", bound=BaseClient)
 
 def command_not_recognized():
     print("Příkaz nerozpoznán")
 
+def robot_client_ensurer(robot: Robot) -> Callable[[type[C]], C]:
+    def inner(client: type[C]) -> C:
+        print(f"Initializing {client.__name__}")
+        service_name = getattr(client, "default_service_name")
+        result = robot.ensure_client(service_name)
+        print(f"{client.__name__} initialized")
+        return result
 
-def ensure_client(robot, client):
-    print(f"Initializing {client.__name__}")
-    result = robot.ensure_client(client.default_service_name)
-    print(f"{client.__name__} initialized")
-
-    return result
+    return inner
 
 
 def load_credential_from_file(credentials):
