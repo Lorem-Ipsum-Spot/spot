@@ -36,7 +36,7 @@ def main():
     robot = sdk.create_robot(options.hostname)
 
     if options.credentials:
-        name, password = load_credential_from_file(options.credentials)
+        name, password = load_credentials_from_file(options.credentials)
         robot.authenticate(name, password)
     else:
         bosdyn_util.authenticate(robot)
@@ -151,7 +151,7 @@ def robot_client_ensurer(robot: Robot) -> Callable[[type[C]], C]:
     return inner
 
 
-def load_credential_from_file(credentials):
+def load_credentials_from_file(credentials: str) -> tuple[str, str]:
     with open(credentials, "r") as file:
         print(f"Using credentials file: {credentials}")
         name, password = file.read().splitlines()
