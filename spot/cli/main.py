@@ -87,20 +87,30 @@ def main():
 
 def main_event_loop(mover: Move, image_client):
     print("Commanding robot to stand...")
-    # mover.stand()
+    mover.stand()
     print("Robot standing.")
+
     time.sleep(3)
     print("STARTING")
 
-    """
-    mover.forward()
-    time.sleep(3)
+    def command_not_recognized():
+        print("Příkaz nerozpoznán")
 
-    mover.backward()
-    time.sleep(3)
-    """
+    def follow():
+        while True:
+            command = listen_microphone()
+            if command == "stuj":
+                print("zastaven")
+                return
+
+            # TODO: try the builtin solution
+            frame = get_complete_image(image_client)
+            destination = detect_lowerbody(frame)
+            if destination is not None:
+                mover.move_to_destination(destination)
+
     while True:
-        command: str = listen_microphone()
+        command = listen_microphone()
 
         switch = {
             "dopředu": mover.forward,
@@ -108,30 +118,17 @@ def main_event_loop(mover: Move, image_client):
             "sedni": mover.lay,
             "lehni": mover.lay,
             "stoupni": mover.stand,
-            "následuj": follow(mover, image_client),
+            "následuj": follow,
         }
+
         # Get the function corresponding to the command, or default to command_not_recognized
         command_function = switch.get(command, command_not_recognized)
         # Execute the function
         command_function()
 
 
-def follow(mover: Move, image_client):
-    while True:
-        command: str = listen_microphone()
-        if command == "stuj":
-            print("zastaven")
-            return
-
-        frame = get_complete_image(image_client)  # TODO try buildin solution
-        destination = detect_lowerbody(frame)
-        if destination is not None:
-            mover.move_to_destination(destination)
-
 C = TypeVar("C", bound=BaseClient)
 
-def command_not_recognized():
-    print("Příkaz nerozpoznán")
 
 def robot_client_ensurer(robot: Robot) -> Callable[[type[C]], C]:
     def inner(client: type[C]) -> C:
