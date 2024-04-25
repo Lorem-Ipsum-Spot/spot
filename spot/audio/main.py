@@ -8,7 +8,8 @@ recognizer = sr.Recognizer()
 def listen_microphone() -> str | None:
     with sr.Microphone() as source:
         print("Řekněte něco:")
-        recognizer.adjust_for_ambient_noise(source)  # Adjust for noise
+        recognizer.adjust_for_ambient_noise(source)
+        # TODO: look into using `listen_background`
         audio = recognizer.listen(source)
 
     try:
