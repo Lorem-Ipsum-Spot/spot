@@ -67,8 +67,8 @@ def main():
 
     with LeaseKeepAlive(lease_client, must_acquire=True, return_at_exit=True):
         print("Powering on robot... This may take several seconds.")
-        # robot.power_on(timeout_sec=20)
-        # assert robot.is_powered_on(), "Robot power on failed."
+        robot.power_on(timeout_sec=20)
+        assert robot.is_powered_on(), "Robot power on failed."
         print("Robot powered on.")
 
         print("Creating movement controller")
