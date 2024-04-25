@@ -1,6 +1,8 @@
+import cv2
 import numpy as np
 from bosdyn.api import image_pb2
-import cv2
+from bosdyn.api.image_pb2 import Image
+from bosdyn.client.image import ImageClient
 from scipy import ndimage
 
 """
@@ -22,16 +24,13 @@ from scipy import ndimage
 """
 
 
-def get_complete_image(image_client):
+def get_complete_image(image_client: ImageClient) -> np.ndarray:
     """
     take image_client
     return jpg
     """
-    image_from_spot = get_image_from_spot(
-        image_client=image_client, camera="frontleft_fisheye_image"
-    )
-    image_in_cv = image_to_opencv(image_from_spot)
-    return image_in_cv
+    image_from_spot = get_image_from_spot(image_client, "frontleft_fisheye_image")
+    return image_to_opencv(image_from_spot)
 
 
 ROTATION_ANGLE = {
@@ -43,49 +42,57 @@ ROTATION_ANGLE = {
 }
 
 
-def image_to_opencv(image, auto_rotate=True):
+def image_to_opencv(image, auto_rotate=True) -> np.ndarray:
     """Convert an image proto message to an openCV image."""
+
     num_channels = 1  # Assume a default of 1 byte encodings.
-    if image.shot.image.pixel_format == image_pb2.Image.PIXEL_FORMAT_DEPTH_U16:
+    pixel_format = image.shot.image.pixel_format
+
+    if pixel_format == Image.PIXEL_FORMAT_DEPTH_U16:
         dtype = np.uint16
     else:
         dtype = np.uint8
-        if image.shot.image.pixel_format == image_pb2.Image.PIXEL_FORMAT_RGB_U8:
+        if pixel_format == Image.PIXEL_FORMAT_RGB_U8:
             num_channels = 3
-        elif image.shot.image.pixel_format == image_pb2.Image.PIXEL_FORMAT_RGBA_U8:
+        elif pixel_format == Image.PIXEL_FORMAT_RGBA_U8:
             num_channels = 4
-        elif image.shot.image.pixel_format == image_pb2.Image.PIXEL_FORMAT_GREYSCALE_U8:
+        elif pixel_format == Image.PIXEL_FORMAT_GREYSCALE_U8:
             num_channels = 1
-        elif (
-            image.shot.image.pixel_format == image_pb2.Image.PIXEL_FORMAT_GREYSCALE_U16
-        ):
+        elif pixel_format == Image.PIXEL_FORMAT_GREYSCALE_U16:
             num_channels = 1
             dtype = np.uint16
 
-    img = np.frombuffer(image.shot.image.data, dtype=dtype)
-    if image.shot.image.format == image_pb2.Image.FORMAT_RAW:
+    decoded_image = np.frombuffer(image.shot.image.data, dtype=dtype)
+
+    if image.shot.image.format != Image.FORMAT_RAW:
+        decoded_image = cv2.imdecode(decoded_image, -1)
+    else:
         try:
             # Attempt to reshape array into an RGB rows X cols shape.
-            img = img.reshape(
+            decoded_image = decoded_image.reshape(
                 (image.shot.image.rows, image.shot.image.cols, num_channels)
             )
         except ValueError:
             # Unable to reshape the image data, trying a regular decode.
-            img = cv2.imdecode(img, -1)
-    else:
-        img = cv2.imdecode(img, -1)
+            decoded_image = cv2.imdecode(decoded_image, -1)
 
     if auto_rotate:
-        img = ndimage.rotate(img, ROTATION_ANGLE[image.source.name])
+        decoded_image = ndimage.rotate(decoded_image, ROTATION_ANGLE[image.source.name])
 
-    return img
+    return decoded_image
 
 
-def get_image_from_spot(image_client, camera="frontleft_fisheye_image", im_res=100):
+def get_image_from_spot(
+    client: ImageClient, camera="frontleft_fisheye_image", quality=100
+):
     image_request = image_pb2.ImageRequest(
-        image_source_name=camera, quality_percent=im_res
+        image_source_name=camera, quality_percent=quality
     )
-    image_responses = image_client.get_image([image_request])
+    image_responses = client.get_image([image_request])
+
+    if not image_responses:
+        raise RuntimeError("No image responses received.")
+
     return image_responses[0]
 
 
