@@ -4,7 +4,7 @@ import pathlib
 from bosdyn.client.math_helpers import SE2Pose, Vec2
 
 PATH_TO_MODEL = (
-    pathlib.Path(cv2.__file__).parent.absolute() / "data" / f"haarcascade_lowerbody.xml"
+    pathlib.Path(cv2.__file__).parent.absolute() / "data" / "haarcascade_lowerbody.xml"
 )
 """
 "lowerbody"

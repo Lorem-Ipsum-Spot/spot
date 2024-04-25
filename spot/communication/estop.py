@@ -1,7 +1,3 @@
-import argparse
-import sys
-
-import bosdyn.client.util
 from bosdyn.client.estop import EstopClient, EstopEndpoint, EstopKeepAlive
 
 
