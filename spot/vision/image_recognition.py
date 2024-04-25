@@ -36,6 +36,7 @@ def detect_lowerbody(frame: MatLike) -> SE2Pose | None:
     return SE2Pose(*destination, angle=0)
 
 
+# FIX: these are only placeholders
 CENTER_X = 1
 CENTER_Y = 2
 DEPTH = 3
