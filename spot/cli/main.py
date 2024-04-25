@@ -121,10 +121,11 @@ def main_event_loop(mover: Move, image_client):
             "následuj": follow,
         }
 
-        # Get the function corresponding to the command, or default to command_not_recognized
-        command_function = switch.get(command, command_not_recognized)
-        # Execute the function
-        command_function()
+        if command is None or command not in switch:
+            command_not_recognized()
+            continue
+
+        switch[command]()
 
 
 C = TypeVar("C", bound=BaseClient)
