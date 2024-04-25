@@ -54,20 +54,13 @@ def main():
 
     ensure_client = robot_client_ensurer(robot)
 
-    def f():
-        import time
-
-        print("Starting Curses GUI")
-        time.sleep(1)
-        return run_curses_gui(estop_client, state_client)
     state_client = ensure_client(RobotStateClient)
     command_client = ensure_client(RobotCommandClient)
     lease_client = ensure_client(LeaseClient)
     image_client = ensure_client(ImageClient)
     # gripper_camera_param_client = ensure_client(GripperCameraParamClient)
 
-    p = Process(target=f)
-    p.start()
+    ncurses_process = create_ncurses_process(estop_client, state_client)
 
     # TODO: run in background
     # run_http_server()
@@ -89,7 +82,7 @@ def main():
         assert not robot.is_powered_on(), "Robot power off failed."
         print("Robot safely powered off.")
 
-    p.join()
+    ncurses_process.join()
 
 
 def main_event_loop(mover: Move, image_client):
@@ -158,3 +151,15 @@ def load_credentials_from_file(credentials: str) -> tuple[str, str]:
         print(f"User: {name}")
         print(f"Password: {'*' * len(password)}")
         return name, password
+
+
+def create_ncurses_process(estop: Estop, state: RobotStateClient) -> Process:
+    def wrapper():
+        print("Starting Curses GUI")
+        time.sleep(3)
+        return run_curses_gui(estop, state)
+
+    process = Process(target=wrapper)
+    process.start()
+
+    return process
