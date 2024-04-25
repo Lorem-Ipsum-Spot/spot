@@ -33,8 +33,7 @@ def detect_lowerbody(frame: MatLike) -> SE2Pose | None:
     legs_center_y = y + height // 2
     X, Y, Z = pixel_to_world(legs_center_x, legs_center_y)  # , depth)
     destination = Vec2(x=X / 1000, y=Y / 1000)  # Převod mm na metry
-    se2_pose = SE2Pose(*destination, angle=0)
-    return se2_pose
+    return SE2Pose(*destination, angle=0)
 
 
 CENTER_X = 1

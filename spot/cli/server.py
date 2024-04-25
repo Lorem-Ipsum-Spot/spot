@@ -1,6 +1,6 @@
-from spot.communication import HttpServer
 from flask import request, jsonify
 from spot.communication.http import app
+from spot.communication import HttpServer
 
 
 def test_handler():
@@ -10,6 +10,7 @@ def test_handler():
 def run_http_server():
     HttpServer.add_handle("/cli", test_handler)
     HttpServer.run(host="0.0.0.0", port=4321)
+
 
 # ------- Handling HTTP requests from client -------
 
