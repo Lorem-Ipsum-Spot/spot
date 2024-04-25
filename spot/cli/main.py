@@ -19,7 +19,7 @@ from spot.cli.stopper import Stop
 from spot.communication.estop import Estop
 from spot.movement.move import Move
 from spot.vision.get_image import get_complete_image
-from spot.vision.image_recognition import detect_lowerbody
+from spot.vision.image_recognition import detect_lowerbody, Direction
 
 
 def main():
@@ -103,9 +103,18 @@ def main_event_loop(mover: Move, image_client: ImageClient, stopper: Stop):
 
             # TODO: try the builtin solution
             frame = get_complete_image(image_client)
-            destination = detect_lowerbody(frame)
-            if destination is not None:
-                mover.move_to_destination(destination)
+
+            instruction = detect_lowerbody(frame)
+            if not instruction:
+                return
+
+            match instruction:
+                case Direction.LEFT:
+                    mover.rotate_left()
+                case Direction.RIGHT:
+                    mover.rotate_right()
+                case Direction.CENTER:
+                    mover.forward()
 
     while not stopper.flag:
         command = listen_microphone()
@@ -124,6 +133,8 @@ def main_event_loop(mover: Move, image_client: ImageClient, stopper: Stop):
             continue
 
         commands[command]()
+
+        # if necesary add sleep(3)
 
 
 C = TypeVar("C", bound=BaseClient)
