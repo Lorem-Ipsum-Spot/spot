@@ -2,22 +2,19 @@ import time
 from argparse import ArgumentParser
 from multiprocessing import Process
 
-import bosdyn.client.estop
+import bosdyn.client
+from bosdyn.client.gripper_camera_param import GripperCameraParamClient
+from bosdyn.client.image import ImageClient
 from bosdyn.client import util as bosdyn_util
 from bosdyn.client.lease import LeaseClient, LeaseKeepAlive
 from bosdyn.client.robot_command import RobotCommandClient
 from bosdyn.client.robot_state import RobotStateClient
-from bosdyn.client.gripper_camera_param import GripperCameraParamClient
-
-
-from spot.communication.estop import Estop
-from spot.cli.curses import run_curses_gui
-from spot.cli.server import run_http_server
-from spot.movement.move import Move
-from bosdyn.client.image import ImageClient, build_image_request
-from bosdyn.api import image_pb2
 
 from spot.audio.main import listen_microphone
+from spot.cli.curses import run_curses_gui
+from spot.cli.server import run_http_server
+from spot.communication.estop import Estop
+from spot.movement.move import Move
 from spot.vision.get_image import get_complete_image
 from spot.vision.image_recognition import detect_lowerbody
 
