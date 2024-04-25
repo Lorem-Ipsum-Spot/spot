@@ -1,11 +1,14 @@
 import curses
-import signal
 import time
 
 import bosdyn.client.estop
+from bosdyn.client.robot import RobotStateClient
+
+from spot.cli.stopper import Stop
+from spot.communication.estop import Estop
 
 
-def run_curses_gui(estop_client, state_client):
+def run_curses_gui(estop_client: Estop, state_client: RobotStateClient, stopper: Stop):
     # Initialize curses screen display
     stdscr = curses.initscr()
 
@@ -49,8 +52,7 @@ def run_curses_gui(estop_client, state_client):
         stdscr.addstr("[r]: Release estop\n", curses.color_pair(2))
         stdscr.addstr("[s]: Settle then cut estop\n", curses.color_pair(2))
 
-        # Monitor estop until user exits
-        while True:
+        while not stopper.flag:
             # Retrieve user input (non-blocking)
             c = stdscr.getch()
 
@@ -97,8 +99,9 @@ def run_curses_gui(estop_client, state_client):
 
             stdscr.addstr(6, 0, estop_status, estop_status_color)
 
-            # Slow down loop
             time.sleep(0.5)
+
+        clean_exit("Stopped by user request")
 
     try:
         run_example()
