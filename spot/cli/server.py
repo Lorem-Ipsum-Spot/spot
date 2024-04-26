@@ -1,18 +1,29 @@
-from spot.communication import HttpServer
+import time
 from flask import request, jsonify
+
+from spot.cli.stopper import Stop
 from spot.communication.http import app
 from spot.movement.move import Move
+from spot.communication import HttpServer
 
 
 def test_handler():
     return "Hello from CLI!"
 
+
 ser_mover:Move
-def run_http_server(mover):
+
+def run_http_server(stopper: Stop, mover:Move):
     global ser_mover
     HttpServer.add_handle("/cli", test_handler)
     HttpServer.run(host="0.0.0.0", port=4321)
     ser_mover = mover
+
+
+    while not stopper.flag:
+        time.sleep(1)
+
+    exit(0)
 
 
 # ------- Handling HTTP requests from client -------

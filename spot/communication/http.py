@@ -21,7 +21,7 @@ def home():
     return redirect("/index.html")
 
 
-@app.route('/<path:path>')
+@app.route("/<path:path>")
 def serve_file(path):
     print(path)
-    return send_from_directory('website', path)
+    return send_from_directory("website", path)
