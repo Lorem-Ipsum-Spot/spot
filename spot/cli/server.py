@@ -1,4 +1,7 @@
+import time
 from flask import request, jsonify
+
+from spot.cli.stopper import Stop
 from spot.communication.http import app
 from spot.communication import HttpServer
 
@@ -7,9 +10,14 @@ def test_handler():
     return "Hello from CLI!"
 
 
-def run_http_server():
+def run_http_server(stopper: Stop):
     HttpServer.add_handle("/cli", test_handler)
     HttpServer.run(host="0.0.0.0", port=4321)
+
+    while not stopper.flag:
+        time.sleep(1)
+
+    exit(0)
 
 
 # ------- Handling HTTP requests from client -------

@@ -1,6 +1,6 @@
 import time
 from argparse import ArgumentParser
-from multiprocessing import Process
+from threading import Thread
 from typing import Callable, TypeVar
 
 import bosdyn.client
@@ -15,6 +15,7 @@ from bosdyn.client.robot_state import RobotStateClient
 from spot.audio.main import listen_microphone
 from spot.cli.curses import run_curses_gui
 from spot.cli.server import run_http_server
+from spot.cli.stopper import Stop
 from spot.communication.estop import Estop
 from spot.movement.move import Move
 from spot.vision.get_image import get_complete_image
@@ -60,10 +61,10 @@ def main():
     image_client = ensure_client(ImageClient)
     # gripper_camera_param_client = ensure_client(GripperCameraParamClient)
 
-    ncurses_process = create_ncurses_process(estop_client, state_client)
+    stopper = Stop()
 
-    # TODO: run in background
-    # run_http_server()
+    create_ncurses_thread(estop_client, state_client, stopper)
+    create_http_thread(stopper)
 
     with LeaseKeepAlive(lease_client, must_acquire=True, return_at_exit=True):
         print("Powering on robot... This may take several seconds.")
@@ -75,17 +76,17 @@ def main():
         mover = Move(command_client)
         print("Movement controller ready")
 
-        main_event_loop(mover, image_client)
+        main_event_loop(mover, image_client, stopper)
 
         print("Powering off...")
         robot.power_off(cut_immediately=False, timeout_sec=20)
         assert not robot.is_powered_on(), "Robot power off failed."
         print("Robot safely powered off.")
 
-    ncurses_process.join()
+    stopper.flag = True
 
 
-def main_event_loop(mover: Move, image_client):
+def main_event_loop(mover: Move, image_client: ImageClient, stopper: Stop):
     print("Commanding robot to stand...")
     mover.stand()
     print("Robot standing.")
@@ -94,7 +95,7 @@ def main_event_loop(mover: Move, image_client):
     print("STARTING")
 
     def follow():
-        while True:
+        while not stopper.flag:
             command = listen_microphone()
             if command == "stuj":
                 print("zastaven")
@@ -106,7 +107,7 @@ def main_event_loop(mover: Move, image_client):
             if destination is not None:
                 mover.move_to_destination(destination)
 
-    while True:
+    while not stopper.flag:
         command = listen_microphone()
 
         commands = {
@@ -148,13 +149,27 @@ def load_credentials_from_file(credentials: str) -> tuple[str, str]:
         return name, password
 
 
-def create_ncurses_process(estop: Estop, state: RobotStateClient) -> Process:
+def create_http_thread(stopper: Stop) -> Thread:
+    def wrapper():
+        print("Starting HTTP server")
+        time.sleep(1)
+        return run_http_server(stopper)
+
+    process = Thread(target=wrapper)
+    process.start()
+
+    return process
+
+
+def create_ncurses_thread(
+    estop: Estop, state: RobotStateClient, stopper: Stop
+) -> Thread:
     def wrapper():
         print("Starting Curses GUI")
         time.sleep(3)
-        return run_curses_gui(estop, state)
+        return run_curses_gui(estop, state, stopper)
 
-    process = Process(target=wrapper)
+    process = Thread(target=wrapper)
     process.start()
 
     return process
