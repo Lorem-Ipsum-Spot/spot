@@ -64,7 +64,6 @@ def main():
     stopper = Stop()
 
     create_ncurses_thread(estop_client, state_client, stopper)
-    create_http_thread(stopper, mover)
 
     with LeaseKeepAlive(lease_client, must_acquire=True, return_at_exit=True):
         print("Powering on robot... This may take several seconds.")
@@ -75,6 +74,8 @@ def main():
         print("Creating movement controller")
         mover = Move(command_client)
         print("Movement controller ready")
+
+        create_http_thread(stopper, mover)
 
         main_event_loop(mover, image_client, stopper)
 

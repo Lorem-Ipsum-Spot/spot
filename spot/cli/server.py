@@ -11,14 +11,15 @@ def test_handler():
     return "Hello from CLI!"
 
 
-ser_mover: Move
+MOVER: Move
 
 
 def run_http_server(stopper: Stop, mover: Move):
-    global ser_mover
+    global MOVER
+    MOVER = mover
+
     HttpServer.add_handle("/cli", test_handler)
     HttpServer.run(host="0.0.0.0", port=4321)
-    ser_mover = mover
 
     while not stopper.flag:
         time.sleep(1)
@@ -38,14 +39,22 @@ def handle_post_request_movement():
     data = request.get_json()
     vect = data.get("dir")
 
-    if vect[0] != 0:
-        print(f"x = {vect[0]}")
-        ser_mover.forward()
-    if vect[1] != 0:
-        print(f"y = {vect[1]}")
-        ser_mover.right()
-    if vect[2] != 0:
-        print(f"z = {vect[2]}")
+    x, y, z = vect
+
+    if x > 0:
+        MOVER.right()
+    if x < 0:
+        MOVER.left()
+
+    if y > 0:
+        MOVER.forward()
+    if y < 0:
+        MOVER.backward()
+
+    if z > 0:
+        MOVER.stand()
+    if z < 0:
+        MOVER.sit()
 
     return jsonify({"message": f"Movement vector: {vect}"}), 200
 
