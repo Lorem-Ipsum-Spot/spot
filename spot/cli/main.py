@@ -64,7 +64,7 @@ def main():
     stopper = Stop()
 
     create_ncurses_thread(estop_client, state_client, stopper)
-    create_http_thread(stopper)
+    create_http_thread(stopper, mover)
 
     with LeaseKeepAlive(lease_client, must_acquire=True, return_at_exit=True):
         print("Powering on robot... This may take several seconds.")
@@ -160,11 +160,11 @@ def load_credentials_from_file(credentials: str) -> tuple[str, str]:
         return name, password
 
 
-def create_http_thread(stopper: Stop) -> Thread:
+def create_http_thread(stopper: Stop, mover) -> Thread:
     def wrapper():
         print("Starting HTTP server")
         time.sleep(1)
-        return run_http_server(stopper)
+        return run_http_server(stopper, mover)
 
     process = Thread(target=wrapper)
     process.start()

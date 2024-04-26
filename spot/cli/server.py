@@ -11,14 +11,14 @@ def test_handler():
     return "Hello from CLI!"
 
 
-ser_mover:Move
+ser_mover: Move
 
-def run_http_server(stopper: Stop, mover:Move):
+
+def run_http_server(stopper: Stop, mover: Move):
     global ser_mover
     HttpServer.add_handle("/cli", test_handler)
     HttpServer.run(host="0.0.0.0", port=4321)
     ser_mover = mover
-
 
     while not stopper.flag:
         time.sleep(1)
