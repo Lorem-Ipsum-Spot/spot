@@ -1,15 +1,18 @@
 from spot.communication import HttpServer
 from flask import request, jsonify
 from spot.communication.http import app
+from spot.movement.move import Move
 
 
 def test_handler():
     return "Hello from CLI!"
 
-
-def run_http_server():
+ser_mover:Move
+def run_http_server(mover):
+    global ser_mover
     HttpServer.add_handle("/cli", test_handler)
     HttpServer.run(host="0.0.0.0", port=4321)
+    ser_mover = mover
 
 
 # ------- Handling HTTP requests from client -------
@@ -26,8 +29,10 @@ def handle_post_request_movement():
 
     if vect[0] != 0:
         print(f"x = {vect[0]}")
+        ser_mover.forward()
     if vect[1] != 0:
         print(f"y = {vect[1]}")
+        ser_mover.right()
     if vect[2] != 0:
         print(f"z = {vect[2]}")
 

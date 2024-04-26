@@ -1,8 +1,8 @@
     BUTTONS         JSON label      JSON value      Websocket
-    Forward         x               1
-    Back            x               -1
-    Left            y               -1
-    Right           y               1
+    Forward         y               1
+    Back            y               -1
+    Left            x               -1
+    Right           x               1
     Up              z               1
     Down            z               -1
     FollowMe        FollowMe        True/False
