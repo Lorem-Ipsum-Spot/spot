@@ -47,13 +47,22 @@ function MovementButtonDown(element,direction)
     1 = x, 2 = y, 3 = z
     minus direction meaning: 1 forward / -1 backward
     */
-
     directions[Math.abs(direction)-1]=(Math.sign(direction));
     sendMovementVector(directions);
+    
+    element.classList.remove("movementButtonUnactive");
+    element.classList.add("movementButtonActive");
+    
 }
 
 function MovementButtonUp(element,direction)
-{
+{   
+    if (directions[Math.abs(direction)-1]==0)
+    {
+        return
+    }
     directions[Math.abs(direction)-1]=0;
     sendMovementVector(directions);
+    element.classList.remove("movementButtonActive");
+    element.classList.add("movementButtonUnactive");
 }

@@ -1,3 +1,8 @@
+:root
+{
+--colorprimary:darkorange;
+}
+
 body
 {
     background-color: black;
@@ -7,41 +12,73 @@ body
 #buttonsDiv
 {
     position: fixed;
-    margin: auto;
-    left: 5%;
-    right: 5%;
-    top: 15%;
-    bottom: 15%;
+    width:100vw;
+    max-height: 100vh;
+    top:50%;
+    transform: translate(0,-50%);
+    left:0;
+    aspect-ratio: 2/1;
 
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 3fr;
-    column-gap: 2%;
+    grid-template-columns: 1fr 1fr;
 
-    background-color: blue;
+    background-color: transparent;
 }
 
-.switchButton
-{ 
-    color: white;
-    border: hidden 0px;
-    aspect-ratio: 1/1;
-    margin-top: auto;
-    margin-bottom: auto;
-}
-
-.switchButtonUnactive
+#switchDiv
 {
-    background-color: red;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    grid-template-areas: "buttonListening buttonFollowing" "buttonStop .";
+    gap: 1em;
+    padding: 0.5em;
 }
 
-.switchButtonActive
+#buttonListening
 {
-    background-color: green;
+    grid-area: buttonListening;
+}
+
+#buttonFollowing
+{
+    grid-area: buttonFollowing;
 }
 
 #buttonStop
 {
-    background-color: red;
+    grid-area: buttonStop;
+}
+
+
+.switchButton
+{ 
+    color: var(--colorprimary);
+    font-size: 1.5em;
+
+    width: auto;
+    height: 100%;
+    margin-top: auto;
+    margin-bottom: auto;
+    border: solid 5px var(--colorprimary);
+}
+
+.switchButtonUnactive
+{
+    background-color: transparent;
+    color: var(--colorprimary);
+}
+
+.switchButtonActive
+{
+    background-color: var(--colorprimary);
+    color: white;
+}
+
+#buttonStop
+{
+    background-color: var(--colorprimary);
+    color:white;
 }
 
 #movementDiv
@@ -50,13 +87,29 @@ body
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr 1fr;
     grid-template-areas: ". buttonForward buttonUp" "buttonLeft . buttonRight" ". buttonBackward buttonDown";
-    grid-gap: 1%;
+    grid-gap: 0.5em;
+    padding: 0.5em;
 
 }
 
 .movementButton
 {
-    background-color: blueviolet;
+    font-size: 1em;
+    border: solid 5px var(--colorprimary);
+    background-color: transparent;
+    color: var(--colorprimary);
+}
+
+.movementButtonActive
+{
+    background-color: var(--colorprimary);
+    color: white;
+}
+
+.movementButtonUnactive
+{
+    background-color: transparent;
+    color: var(--colorprimary);
 }
 
 #buttonForward
@@ -87,4 +140,13 @@ grid-area: buttonRight;
 #buttonDown
 {
     grid-area: buttonDown;
+}
+
+@media (orientation: portrait) {
+    #buttonsDiv
+    {   
+        grid-template-columns: None;
+        grid-template-rows: 1fr 1fr;
+        aspect-ratio: 1/2;
+    }
 }
