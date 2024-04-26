@@ -9,7 +9,7 @@ def run_curses_gui(estop_client, state_client):
     # Initialize curses screen display
     stdscr = curses.initscr()
 
-    def cleanup_example(msg):
+    def cleanup(msg: str):
         """Shut down curses and exit the program."""
         print("Exiting")
         estop_client.estop_keep_alive.shutdown()
@@ -21,7 +21,7 @@ def run_curses_gui(estop_client, state_client):
         print(msg)
 
     def clean_exit(msg=""):
-        cleanup_example(msg)
+        cleanup(msg)
         exit(0)
 
     def sigint_handler(_sig, _frame):
@@ -96,13 +96,13 @@ def run_curses_gui(estop_client, state_client):
                     clean_exit()
 
             # Display current estop status
-            if not estop_client.estop_keep_alive.status_queue.empty():
-                latest_status = estop_client.estop_keep_alive.status_queue.get()[
-                    1
-                ].strip()
+            status_queue = estop_client.estop_keep_alive.status_queue
+            if not status_queue.empty():
+                latest_status = status_queue.get()[1].strip()
                 if latest_status != "":
                     # If you lose this estop endpoint, report it to user
                     stdscr.addstr(7, 0, latest_status, curses.color_pair(3))
+
             stdscr.addstr(6, 0, estop_status, estop_status_color)
 
             # Slow down loop
@@ -111,5 +111,5 @@ def run_curses_gui(estop_client, state_client):
     try:
         run_example()
     except Exception as e:
-        cleanup_example(e)
+        cleanup(str(e))
         raise e
