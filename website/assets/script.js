@@ -56,7 +56,11 @@ function MovementButtonDown(element,direction)
 }
 
 function MovementButtonUp(element,direction)
-{
+{   
+    if (directions[Math.abs(direction)-1]==0)
+    {
+        return
+    }
     directions[Math.abs(direction)-1]=0;
     sendMovementVector(directions);
     element.classList.remove("movementButtonActive");
