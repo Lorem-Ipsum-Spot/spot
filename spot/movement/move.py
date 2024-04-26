@@ -42,11 +42,11 @@ class Move:
     def rotate_right(self):
         self.__execute_velocity(v_rot=-self.__VELOCITY_BASE_ANGULAR)
 
-    def turnLeft(self, angle=math.pi / 2):
-        self.stand(yaw=angle) #TODO
+    #def turnLeft(self, angle=math.pi / 2):
+    #    self.stand(yaw=angle) #TODO
 
-    def turnRight(self, angle=-math.pi / 2):
-        self.stand(yaw=angle) #TODO
+    #def turnRight(self, angle=-math.pi / 2):
+    #    self.stand(yaw=angle) #TODO
 
     def lay(self):
         self.__execute_command(RobotCommandBuilder.synchro_sit_command())
