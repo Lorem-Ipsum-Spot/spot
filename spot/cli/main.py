@@ -117,17 +117,17 @@ def main_event_loop(mover: Move, image_client: ImageClient, stopper: Stop):
                 case Direction.CENTER:
                     mover.forward()
 
+    commands = {
+        "dopředu": mover.forward,
+        "dozadu": mover.backward,
+        "sedni": mover.lay,
+        "lehni": mover.lay,
+        "stoupni": mover.stand,
+        "následuj": follow,
+    }
+
     while not stopper.flag:
         command = listen_microphone()
-
-        commands = {
-            "dopředu": mover.forward,
-            "dozadu": mover.backward,
-            "sedni": mover.lay,
-            "lehni": mover.lay,
-            "stoupni": mover.stand,
-            "následuj": follow,
-        }
 
         if command is None or command not in commands:
             print(f"Command not recognized: {command}")
