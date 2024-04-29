@@ -1,4 +1,5 @@
 import curses
+import sys
 import time
 
 import bosdyn.client.estop
@@ -8,11 +9,11 @@ from spot.cli.stopper import Stop
 from spot.communication.estop import Estop
 
 
-def run_curses_gui(estop_client: Estop, state_client: RobotStateClient, stopper: Stop):
+def run_curses_gui(estop_client: Estop, state_client: RobotStateClient, stopper: Stop) -> None:
     # Initialize curses screen display
     stdscr = curses.initscr()
 
-    def cleanup(msg: str):
+    def cleanup(msg: str) -> None:
         """Shut down curses and exit the program."""
         print("Exiting")
         estop_client.estop_keep_alive.shutdown()
@@ -23,12 +24,12 @@ def run_curses_gui(estop_client: Estop, state_client: RobotStateClient, stopper:
         curses.endwin()
         print(msg)
 
-    def clean_exit(msg=""):
+    def clean_exit(msg="") -> None:
         cleanup(msg)
-        exit(0)
+        sys.exit(0)
 
-    def run_example():
-        """Run the actual example with the curses screen display"""
+    def run_example() -> None:
+        """Run the actual example with the curses screen display."""
         # Set up curses screen display to monitor for stop request
         curses.noecho()
         stdscr.keypad(True)
@@ -107,4 +108,4 @@ def run_curses_gui(estop_client: Estop, state_client: RobotStateClient, stopper:
         run_example()
     except Exception as e:
         cleanup(str(e))
-        raise e
+        raise

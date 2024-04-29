@@ -2,7 +2,8 @@ from bosdyn.client.estop import EstopClient, EstopEndpoint, EstopKeepAlive
 
 
 class Estop:
-    """Provides a software estop without a GUI.
+    """
+    Provides a software estop without a GUI.
 
     To use this estop, create an instance of the EstopNoGui class and use the stop() and allow()
     functions programmatically.
@@ -10,7 +11,7 @@ class Estop:
 
     keepalive: EstopKeepAlive
 
-    def __init__(self, robot, timeout_sec, name=None):
+    def __init__(self, robot, timeout_sec, name=None) -> None:
         client = robot.ensure_client(EstopClient.default_service_name)
 
         # Force server to set up a single endpoint system
@@ -30,11 +31,11 @@ class Estop:
         """Cleanly shut down estop on exit."""
         self.estop_keep_alive.shutdown()
 
-    def stop(self):
+    def stop(self) -> None:
         self.estop_keep_alive.stop()
 
-    def allow(self):
+    def allow(self) -> None:
         self.estop_keep_alive.allow()
 
-    def settle_then_cut(self):
+    def settle_then_cut(self) -> None:
         self.estop_keep_alive.settle_then_cut()

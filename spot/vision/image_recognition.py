@@ -1,7 +1,8 @@
-import cv2
-from cv2.typing import MatLike
 import pathlib
 from enum import IntEnum
+
+import cv2
+from cv2.typing import MatLike
 
 PATH_TO_MODEL = (
     pathlib.Path(cv2.__file__).parent.absolute() / "data" / "haarcascade_lowerbody.xml"

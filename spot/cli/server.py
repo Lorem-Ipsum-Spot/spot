@@ -1,20 +1,22 @@
+import sys
 import time
-from flask import request, jsonify
+
+from flask import jsonify, request
 
 from spot.cli.stopper import Stop
+from spot.communication import HttpServer
 from spot.communication.http import app
 from spot.movement.move import Move
-from spot.communication import HttpServer
 
 
-def test_handler():
+def test_handler() -> str:
     return "Hello from CLI!"
 
 
 MOVER: Move
 
 
-def run_http_server(stopper: Stop, mover: Move):
+def run_http_server(stopper: Stop, mover: Move) -> None:
     global MOVER
     MOVER = mover
 
@@ -24,7 +26,7 @@ def run_http_server(stopper: Stop, mover: Move):
     while not stopper.flag:
         time.sleep(1)
 
-    exit(0)
+    sys.exit(0)
 
 
 # ------- Handling HTTP requests from client -------
@@ -96,6 +98,6 @@ def handle_post_request_stop():
     data = request.get_json()
     stop = data.get("stop")
 
-    print(f"Spots operator wants it to STOP immediately!")
+    print("Spots operator wants it to STOP immediately!")
 
-    return jsonify({"message": f"Spots operator wants it to STOP immediately!"}), 200
+    return jsonify({"message": "Spots operator wants it to STOP immediately!"}), 200
