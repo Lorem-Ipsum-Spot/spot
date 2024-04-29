@@ -12,7 +12,7 @@ from bosdyn.client.lease import LeaseClient, LeaseKeepAlive
 from bosdyn.client.robot_command import RobotCommandClient
 from bosdyn.client.robot_state import RobotStateClient
 
-from spot.audio.main import listen_microphone
+from spot.audio.main import Listener
 from spot.cli.curses import run_curses_gui
 from spot.cli.server import run_http_server
 from spot.cli.stopper import Stop
@@ -63,6 +63,8 @@ def main():
 
     stopper = Stop()
 
+    listener = Listener()
+
     create_ncurses_thread(estop_client, state_client, stopper)
 
     with LeaseKeepAlive(lease_client, must_acquire=True, return_at_exit=True):
@@ -77,7 +79,7 @@ def main():
 
         create_http_thread(stopper, mover)
 
-        main_event_loop(mover, image_client, stopper)
+        main_event_loop(mover, image_client, listener, stopper)
 
         print("Powering off...")
         robot.power_off(cut_immediately=False, timeout_sec=20)
@@ -87,7 +89,9 @@ def main():
     stopper.flag = True
 
 
-def main_event_loop(mover: Move, image_client: ImageClient, stopper: Stop):
+def main_event_loop(
+    mover: Move, image_client: ImageClient, listener: Listener, stopper: Stop
+):
     print("Commanding robot to stand...")
     mover.stand()
     print("Robot standing.")
@@ -95,27 +99,33 @@ def main_event_loop(mover: Move, image_client: ImageClient, stopper: Stop):
     time.sleep(3)
     print("STARTING")
 
+    following = False
+
     def follow():
-        while not stopper.flag:
-            command = listen_microphone()
-            if command == "stuj":
-                print("zastaven")
-                return
+        nonlocal following
+        following = True
 
+        while not stopper.flag and following:
             # TODO: try the builtin solution
-            frame = get_complete_image(image_client)
+            # frame = get_complete_image(image_client)
+            # instruction = detect_lowerbody(frame)
+            #
+            # if not instruction:
+            #     return
+            #
+            # match instruction:
+            #     case Direction.LEFT:
+            #         mover.rotate_left()
+            #     case Direction.RIGHT:
+            #         mover.rotate_right()
+            #     case Direction.CENTER:
+            #         mover.forward()
+            print("FOLLOWING")
+            time.sleep(1)
 
-            instruction = detect_lowerbody(frame)
-            if not instruction:
-                return
-
-            match instruction:
-                case Direction.LEFT:
-                    mover.rotate_left()
-                case Direction.RIGHT:
-                    mover.rotate_right()
-                case Direction.CENTER:
-                    mover.forward()
+    def stop_follow():
+        nonlocal following
+        following = False
 
     commands = {
         "dopředu": mover.forward,
@@ -124,18 +134,21 @@ def main_event_loop(mover: Move, image_client: ImageClient, stopper: Stop):
         "lehni": mover.lay,
         "stoupni": mover.stand,
         "následuj": follow,
+        "stůj": stop_follow,
     }
 
-    while not stopper.flag:
-        command = listen_microphone()
-
-        if command is None or command not in commands:
+    def listener_callback(command: str):
+        if command not in commands:
             print(f"Command not recognized: {command}")
-            continue
+            return
 
-        commands[command]()
+        print(f"Command recognized: {command}")
+        # commands[command]()
 
-        # if necesary add sleep(3)
+    listener.run(stopper, listener_callback)
+
+    while not stopper.flag:
+        time.sleep(1)
 
 
 C = TypeVar("C", bound=BaseClient)

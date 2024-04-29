@@ -1,14 +1,36 @@
+from typing import Callable
 import speech_recognition as sr
 
-recognizer = sr.Recognizer()
+from spot.cli.stopper import Stop
 
 
-def listen_microphone() -> str | None:
-    with sr.Microphone() as source:
-        recognizer.adjust_for_ambient_noise(source)
-        # TODO: look into using `listen_background`
-        audio = recognizer.listen(source)
-    try:
-        return recognizer.recognize_vosk(audio, language="cs-CZ").lower()
-    except sr.UnknownValueError:
-        return None
+class Listener:
+    recognizer: sr.Recognizer
+    microphone: sr.Microphone
+    stop_function: Callable[[bool], None]
+
+    def __init__(self):
+        self.recognizer = sr.Recognizer()
+        self.microphone = sr.Microphone()
+
+    def run(self, stopper: Stop, callback: Callable[[str], None]):
+        self.stopper = stopper
+
+        def callback_wrapper(recognizer: sr.Recognizer, audio: sr.AudioData) -> None:
+            if self.stopper.flag:
+                self.stop_function(True)
+                return
+
+            try:
+                text = recognizer.recognize_vosk(audio, language="cs-CZ").lower()
+            except sr.UnknownValueError:
+                return
+
+            callback(text)
+
+        with self.microphone as source:
+            self.recognizer.adjust_for_ambient_noise(source)
+
+        self.stop_function = self.recognizer.listen_in_background(
+            source, callback_wrapper
+        )
