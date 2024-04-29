@@ -33,4 +33,4 @@ SpeechRecognition==3.10.1
 opencv-python==4.9.0.80
 vosk==0.3.45
 scipy==1.13.0
-
+ruff==0.4.2
