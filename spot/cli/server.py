@@ -59,9 +59,9 @@ def handle_post_request_rotate():
     direction = data.get("direction")
 
     if direction > 0:
-        HANDLER(Command.LEFT)
+        HANDLER(Command.ROTATE_LEFT)
     elif direction < 0:
-        HANDLER(Command.RIGHT)
+        HANDLER(Command.ROTATE_RIGHT)
     else:
         return jsonify({"message": "Got 0 for rotation > impossible."}), 200
 
