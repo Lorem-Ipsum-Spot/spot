@@ -138,7 +138,7 @@ def main_event_loop(
     listener.run(stopper, listener_callback)
 
     while not stopper.flag:
-        time.sleep(1)
+        time.sleep(0.4)
 
         match active_command:
             case Command.STOP:
@@ -153,12 +153,16 @@ def main_event_loop(
                 mover.right()
             case Command.STAND:
                 mover.stand()
+                active_command = Command.STOP
             case Command.SIT:
                 mover.sit()
+                active_command = Command.STOP
             case Command.ROTATE_LEFT:
                 mover.rotate_left()
+                active_command = Command.STOP
             case Command.ROTATE_RIGHT:
                 mover.rotate_right()
+                active_command = Command.STOP
             case Command.FOLLOWING:
                 follow_cycle()
             case _:

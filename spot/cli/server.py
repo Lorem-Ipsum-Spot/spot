@@ -22,6 +22,7 @@ def run_http_server(stopper: Stop, handler: callable):
 
 # ----- Small buttons
 
+
 @app.route("/api/movement", methods=["POST"])
 def handle_post_request_movement():
     if request.method != "POST":
@@ -34,7 +35,7 @@ def handle_post_request_movement():
     # x je dopredu dozadu
     x, y = vect
 
-    if (x != 0 or y != 0):
+    if x != 0 or y != 0:
         if y > 0:
             HANDLER(Command.RIGHT)
         if y < 0:
@@ -47,6 +48,7 @@ def handle_post_request_movement():
         HANDLER(Command.STOP)
 
     return jsonify({"message": f"Movement vector: {vect}"}), 200
+
 
 @app.route("/api/rotation", methods=["POST"])
 def handle_post_request_rotate():
@@ -66,6 +68,7 @@ def handle_post_request_rotate():
 
     return jsonify({"message": f"Rotation: {direction}"}), 200
 
+
 @app.route("/api/updown", methods=["POST"])
 def handle_post_request_updown():
     if request.method != "POST":
@@ -82,7 +85,9 @@ def handle_post_request_updown():
 
     return jsonify({"message": f"Spot shoud now be standing is: {stand}"}), 200
 
+
 # ----- Big buttons -----
+
 
 @app.route("/api/followingStatus", methods=["POST"])
 def handle_post_request_following():
@@ -118,6 +123,6 @@ def handle_post_request_stop():
         data = {"message": "Invalid request method from server (Stop)"}
         return jsonify(data), 200
 
-    HANDLER(Command.STOP)
+    HANDLER(Command.STAND)
 
     return jsonify({"message": f"Spots operator wants it to STOP immediately!"}), 200
