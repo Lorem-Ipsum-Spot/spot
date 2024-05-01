@@ -1,5 +1,5 @@
 
-// send vector [x,y,z] to server - called periodically.
+// send vector [x,y] to server - called on change
 async function sendMovementVector(dirs){
     const url = "/api/movement";
 
@@ -127,3 +127,66 @@ async function stopSpot(){
     });
 }
 
+
+async function sendRotation(direction){
+    const url = "/api/rotation";
+
+    const data = {
+        direction : direction,
+    }
+
+    const response = await fetch(url,{
+        method: 'POST',
+        mode: 'cors',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        redirect: 'follow',
+        referrerPolicy: 'no-referrer',
+        body: JSON.stringify(data),
+    })
+
+    .then(response => response.json())
+    
+    .then(data => {
+        console.log('Response from server:', data);
+    })
+    
+    .catch(error => {
+        console.error('Error fetching data:', error);
+    });
+}
+
+
+async function sendUpDown(shouldStand){
+    const url = "/api/updown";
+
+    const data = {
+        stand : shouldStand,
+    }
+
+    const response = await fetch(url,{
+        method: 'POST',
+        mode: 'cors',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        redirect: 'follow',
+        referrerPolicy: 'no-referrer',
+        body: JSON.stringify(data),
+    })
+
+    .then(response => response.json())
+    
+    .then(data => {
+        console.log('Response from server:', data);
+    })
+    
+    .catch(error => {
+        console.error('Error fetching data:', error);
+    });
+}

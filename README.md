@@ -16,6 +16,8 @@ Instalace závislostí (do virtuálního protředí):
 pip install -r requirements.txt
 ```
 
+### VOSK model
+
 Instalace modelu na rozpoznání řeči (přejmenovat na "model" a dát do rootu projektu):
 [VOSK Models - Czech](https://alphacephei.com/vosk/models/vosk-model-small-cs-0.4-rhasspy.zip)
 
@@ -26,6 +28,19 @@ curl "https://alphacephei.com/vosk/models/vosk-model-small-cs-0.4-rhasspy.zip" -
 unzip model.zip
 mv -iv vosk-model-small-cs-0.4-rhasspy model
 ```
+
+### PyAudio
+
+Na Debianových systémech (Ubuntu, RaspbianOS) nebo na jiném Unixu občas
+instalace selže, protože neexistuje `"pyaudio.h"`. Potom je potřeba
+nainstalovat `PyAudio` ze systémového správce balíčků.
+
+```sh
+sudo apt install python3-pyaudio
+```
+
+Poté `PyAudio` dočasně vymazat z `requirements.txt` a znovu spustit
+`pip install` jako předtím.
 
 ## Spuštění
 
@@ -60,3 +75,7 @@ Hlavní spustitelný modul, zpracovává argumenty příkazu a spouští všechn
 ### [curses](spot/curses/README.md)
 
 Terminal user interface (TUI) library for EStop client.
+
+### [audio](spot/audio/README.md)
+
+Using Google speech API for audio recognition.

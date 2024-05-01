@@ -16,46 +16,53 @@
     <div id="movementDiv">
         <button 
             id="buttonForward"
-            onmousedown ="MovementButtonDown(this,2)"
-            onmouseup="MovementButtonUp(this,2)"
-            onmouseout="MovementButtonUp(this,2)"
-            class="movementButton movementButtonUnactive">
-            Forward</button>
-        <button
-            id="buttonBackward"
-            onmousedown ="MovementButtonDown(this,-2)"
-            onmouseup="MovementButtonUp(this,-2)"
-            onmouseout="MovementButtonUp(this,-2)"
-            class="movementButton movementButtonUnactive">
-            Backward</button>
-        <button
-            id="buttonRight"
             onmousedown ="MovementButtonDown(this,1)"
             onmouseup="MovementButtonUp(this,1)"
             onmouseout="MovementButtonUp(this,1)"
             class="movementButton movementButtonUnactive">
-            Right</button>
+            Forward</button>
         <button
-            id="buttonLeft"
+            id="buttonBackward"
             onmousedown ="MovementButtonDown(this,-1)"
             onmouseup="MovementButtonUp(this,-1)"
             onmouseout="MovementButtonUp(this,-1)"
             class="movementButton movementButtonUnactive">
+            Backward</button>
+        <button
+            id="buttonRight"
+            onmousedown ="MovementButtonDown(this,-2)"
+            onmouseup="MovementButtonUp(this,-2)"
+            onmouseout="MovementButtonUp(this,-2)"
+            class="movementButton movementButtonUnactive">
+            Right</button>
+        <button
+            id="buttonLeft"
+            onmousedown ="MovementButtonDown(this,2)"
+            onmouseup="MovementButtonUp(this,2)"
+            onmouseout="MovementButtonUp(this,2)"
+            class="movementButton movementButtonUnactive">
             Left</button>
         <button
             id="buttonUp"
-            onmousedown ="MovementButtonDown(this,3)"
-            onmouseup="MovementButtonUp(this,3)"
-            onmouseout="MovementButtonUp(this,3)"
-            class="movementButton movementButtonUnactive">
-            Up</button>
+            onclick="UpDownButton(this,true)"
+            class="extendedMovementButton">
+            Stand</button>
         <button
             id="buttonDown"
-            onmousedown ="MovementButtonDown(this,-3)"
-            onmouseup="MovementButtonUp(this,-3)"
-            onmouseout="MovementButtonUp(this,-3)"
-            class="movementButton movementButtonUnactive">
-            Down</button>
+            onclick="UpDownButton(this,false)"
+            class="extendedMovementButton">
+            Lay down</button>
+        <button
+            id="buttonRotateLeft"
+            onclick="Rotate(this,1)"
+            class="extendedMovementButton">
+            Turn Left</button>
+        <button
+            id="buttonRotateRight"
+            onclick="Rotate(this,-1)"
+            class="extendedMovementButton">
+            Turn Right</button>
+        
     </div>
 </div>
 </body>
