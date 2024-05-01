@@ -31,18 +31,19 @@ def handle_post_request_movement():
     data = request.get_json()
     vect = data.get("dir")
 
+    # x je dopredu dozadu
     x, y = vect
 
-    if x > 0:
+    if y > 0:
         HANDLER(Command.RIGHT)
-    if x < 0:
+    if y < 0:
         HANDLER(Command.LEFT)
     else:
         HANDLER(Command.STOP)
 
-    if y > 0:
+    if x > 0:
         HANDLER(Command.FORWARD)
-    if y < 0:
+    if x < 0:
         HANDLER(Command.BACKWARD)
     else:
         HANDLER(Command.STOP)
