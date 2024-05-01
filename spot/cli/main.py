@@ -107,12 +107,10 @@ def main_event_loop(
         frame = get_complete_image(image_client)
         instruction = detect_lowerbody(frame)
 
-        if not instruction:
-            nonlocal active_command
-            active_command = Command.STOP
-            return
-
         match instruction:
+            case None:
+                nonlocal active_command
+                active_command = Command.STOP
             case Direction.LEFT:
                 mover.rotate_left()
             case Direction.RIGHT:
@@ -144,13 +142,17 @@ def main_event_loop(
             case Command.BACKWARD:
                 mover.backward()
             case Command.LEFT:
-                mover.rotate_left()
+                mover.left()
             case Command.RIGHT:
-                mover.rotate_right()
+                mover.right()
             case Command.STAND:
                 mover.stand()
             case Command.SIT:
                 mover.sit()
+            case Command.ROTATE_LEFT:
+                mover.rotate_left()
+            case Command.ROTATE_RIGHT:
+                mover.rotate_right()
             case Command.FOLLOWING:
                 follow_cycle()
             case _:
