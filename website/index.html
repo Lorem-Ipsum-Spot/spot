@@ -45,22 +45,26 @@
         <button
             id="buttonUp"
             onclick="UpDownButton(this,true)"
-            class="extendedMovementButton">
+            class="UpDownButton">
             Stand</button>
         <button
             id="buttonDown"
             onclick="UpDownButton(this,false)"
-            class="extendedMovementButton">
+            class="UpDownButton">
             Lay down</button>
         <button
             id="buttonRotateLeft"
-            onclick="Rotate(this,1)"
-            class="extendedMovementButton">
+            onmousedown ="RotationButtonDown(this,1)"
+            onmouseup="RotationButtonUp(this,1)"
+            onmouseout="RotationButtonUp(this,1)"
+            class="movementButton movementButtonUnactive">
             Turn Left</button>
         <button
             id="buttonRotateRight"
-            onclick="Rotate(this,-1)"
-            class="extendedMovementButton">
+            onmousedown ="RotationButtonDown(this,-1)"
+            onmouseup="RotationButtonUp(this,-1)"
+            onmouseout="RotationButtonUp(this,-1)"
+            class="movementButton movementButtonUnactive">
             Turn Right</button>
         
     </div>

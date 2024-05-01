@@ -64,7 +64,7 @@ def handle_post_request_rotate():
     elif direction < 0:
         HANDLER(Command.ROTATE_RIGHT)
     else:
-        return jsonify({"message": "Got 0 for rotation > impossible."}), 200
+        HANDLER(Command.STOP)
 
     return jsonify({"message": f"Rotation: {direction}"}), 200
 

@@ -29,9 +29,18 @@ function MovementButtonUp(element,direction)
     element.classList.add("movementButtonUnactive");
 }
 
-function Rotate(element,rotation)
+function RotationButtonDown(element,rotation)
 {    
     sendRotation(rotation);   
+    element.classList.remove("movementButtonUnactive");
+    element.classList.add("movementButtonActive");
+}
+
+function RotationButtonUp(element,rotation)
+{
+    sendRotation(0);
+    element.classList.remove("movementButtonActive");
+    element.classList.add("movementButtonUnactive");
 }
 
 function UpDownButton(element,stand)
