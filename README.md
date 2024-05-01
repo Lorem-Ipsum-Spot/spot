@@ -66,6 +66,15 @@ name
 password
 ```
 
+## Vývoj
+
+Používá `ruff` linter. Styl je kontrolován během PR. Pro lokální
+spouštění zavolat:
+
+```sh
+ruff check spot
+```
+
 ## Struktura
 
 ### [cli](spot/cli/README.md)
