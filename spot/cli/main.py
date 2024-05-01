@@ -13,6 +13,7 @@ from bosdyn.client.robot_command import RobotCommandClient
 from bosdyn.client.robot_state import RobotStateClient
 
 from spot.audio.main import Listener
+from spot.cli.command import Command, str_to_command
 from spot.cli.curses import run_curses_gui
 from spot.cli.server import run_http_server
 from spot.cli.stopper import Stop
@@ -96,59 +97,65 @@ def main_event_loop(
     mover.stand()
     print("Robot standing.")
 
-    time.sleep(3)
+    time.sleep(0.5)
     print("STARTING")
 
-    following = False
+    active_command = Command.STOP
 
-    def follow():
-        nonlocal following
-        following = True
+    def follow_cycle():
+        # TODO: try the builtin solution
+        frame = get_complete_image(image_client)
+        instruction = detect_lowerbody(frame)
 
-        while not stopper.flag and following:
-            # TODO: try the builtin solution
-            # frame = get_complete_image(image_client)
-            # instruction = detect_lowerbody(frame)
-            #
-            # if not instruction:
-            #     return
-            #
-            # match instruction:
-            #     case Direction.LEFT:
-            #         mover.rotate_left()
-            #     case Direction.RIGHT:
-            #         mover.rotate_right()
-            #     case Direction.CENTER:
-            #         mover.forward()
-            print("FOLLOWING")
-            time.sleep(1)
+        if not instruction:
+            nonlocal active_command
+            active_command = Command.STOP
+            return
 
-    def stop_follow():
-        nonlocal following
-        following = False
+        match instruction:
+            case Direction.LEFT:
+                mover.rotate_left()
+            case Direction.RIGHT:
+                mover.rotate_right()
+            case Direction.CENTER:
+                mover.forward()
 
-    commands = {
-        "dopředu": mover.forward,
-        "dozadu": mover.backward,
-        "sedni": mover.lay,
-        "lehni": mover.lay,
-        "stoupni": mover.stand,
-        "následuj": follow,
-        "stůj": stop_follow,
-    }
+    def listener_callback(command_str: str):
+        command = str_to_command(command_str)
 
-    def listener_callback(command: str):
-        if command not in commands:
+        if command is None:
             print(f"Command not recognized: {command}")
             return
 
         print(f"Command recognized: {command}")
-        # commands[command]()
+        nonlocal active_command
+        active_command = command
 
     listener.run(stopper, listener_callback)
 
     while not stopper.flag:
         time.sleep(1)
+
+        match active_command:
+            case Command.STOP:
+                continue
+            case Command.FORWARD:
+                mover.forward()
+            case Command.BACKWARD:
+                mover.backward()
+            case Command.LEFT:
+                mover.rotate_left()
+            case Command.RIGHT:
+                mover.rotate_right()
+            case Command.STAND:
+                mover.stand()
+            case Command.SIT:
+                mover.sit()
+            case Command.FOLLOWING:
+                follow_cycle()
+            case _:
+                print(f"Command not recognized: {active_command}")
+                continue
 
 
 C = TypeVar("C", bound=BaseClient)
