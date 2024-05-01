@@ -75,7 +75,7 @@ class Move:
         )
         self.__execute_command(command)
 
-    def __execute_command(self, command: Any, end_time=None) -> None:
+    def __execute_command(self, command: Any, end_time: float | None = None) -> None:
         """
         Execute the specified command.
 

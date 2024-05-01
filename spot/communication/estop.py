@@ -43,13 +43,6 @@ class Estop:
         # Release the estop
         self.estop_keep_alive.allow()
 
-    def __enter__(self) -> None:
-        pass
-
-    def __exit__(self, _exc_type, _exc_val, _exc_tb) -> None:
-        """Shut down estop on exit."""
-        self.estop_keep_alive.shutdown()
-
     def stop(self) -> None:
         """Cut the estop."""
         self.estop_keep_alive.stop()

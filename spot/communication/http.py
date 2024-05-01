@@ -1,8 +1,8 @@
-from flask import Flask, redirect, send_from_directory
-from werkzeug.wrappers import Response
-from flask.typing import RouteCallable
 import os
 
+from flask import Flask, redirect, send_from_directory
+from flask.typing import RouteCallable
+from werkzeug.wrappers import Response
 
 app = Flask("spot-server")
 

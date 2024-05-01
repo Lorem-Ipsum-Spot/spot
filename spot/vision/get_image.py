@@ -93,8 +93,8 @@ def image_to_opencv(image, auto_rotate=True) -> np.ndarray:
 
 def get_image_from_spot(
     client: ImageClient,
-    camera="frontleft_fisheye_image",
-    quality=100,
+    camera: str = "frontleft_fisheye_image",
+    quality: int = 100,
 ):
     image_request = image_pb2.ImageRequest(
         image_source_name=camera,
