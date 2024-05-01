@@ -23,6 +23,10 @@ from spot.vision.get_image import get_complete_image
 from spot.vision.image_recognition import detect_lowerbody, Direction
 
 
+def handler(command:Command):
+    print(command)
+        
+
 def main():
     parser = ArgumentParser()
     bosdyn_util.add_base_arguments(parser)
@@ -78,7 +82,7 @@ def main():
         mover = Move(command_client)
         print("Movement controller ready")
 
-        create_http_thread(stopper, mover)
+        create_http_thread(stopper, handler)
 
         main_event_loop(mover, image_client, listener, stopper)
 

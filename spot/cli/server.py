@@ -3,32 +3,24 @@ from flask import request, jsonify
 
 from spot.cli.stopper import Stop
 from spot.communication.http import app
-from spot.movement.move import Move
 from spot.communication import HttpServer
+from spot.cli.command import Command
+
+HANDLER: callable
 
 
-def test_handler():
-    return "Hello from CLI!"
+def run_http_server(stopper: Stop, handler: callable):
+    global HANDLER
+    HANDLER = handler
 
-
-MOVER: Move
-
-
-def run_http_server(stopper: Stop, mover: Move):
-    global MOVER
-    MOVER = mover
-
-    HttpServer.add_handle("/cli", test_handler)
     HttpServer.run(host="0.0.0.0", port=4321)
-
-    while not stopper.flag:
-        time.sleep(1)
 
     exit(0)
 
 
 # ------- Handling HTTP requests from client -------
 
+# ----- Small buttons
 
 @app.route("/api/movement", methods=["POST"])
 def handle_post_request_movement():
@@ -39,25 +31,55 @@ def handle_post_request_movement():
     data = request.get_json()
     vect = data.get("dir")
 
-    x, y, z = vect
+    x, y = vect
 
     if x > 0:
-        MOVER.right()
+        HANDLER(Command.RIGHT)
     if x < 0:
-        MOVER.left()
+        HANDLER(Command.LEFT)
 
     if y > 0:
-        MOVER.forward()
+        HANDLER(Command.FORWARD)
     if y < 0:
-        MOVER.backward()
-
-    if z > 0:
-        MOVER.stand()
-    if z < 0:
-        MOVER.sit()
+        HANDLER(Command.BACKWARD)
 
     return jsonify({"message": f"Movement vector: {vect}"}), 200
 
+@app.route("/api/rotation", methods=["POST"])
+def handle_post_requers_rotate():
+    if request.method != "POST":
+        data = {"message": "Invalid request method from server (Movement)"}
+        return jsonify(data), 200
+
+    data = request.get_json()
+    dir = data.get("direction")
+
+    if dir > 0:
+        HANDLER(Command.LEFT)
+    elif dir < 0:
+        HANDLER(Command.RIGHT)
+    else:
+        return jsonify({"message": "Got 0 for rotation > impossible."}), 200
+
+    return jsonify({"message": f"Rotation: {dir}"}), 200
+
+@app.route("/api/updown", methods=["POST"])
+def handle_post_requers_rotate():
+    if request.method != "POST":
+        data = {"message": "Invalid request method from server (Movement)"}
+        return jsonify(data), 200
+
+    data = request.get_json()
+    stand = data.get("stand")
+
+    if not stand:
+        HANDLER(Command.SIT)
+    else:
+        HANDLER(Command.STAND)
+
+    return jsonify({"message": f"Spot shoud now be standing is: {stand}"}), 200
+
+# ----- Big buttons -----
 
 @app.route("/api/followingStatus", methods=["POST"])
 def handle_post_request_following():
