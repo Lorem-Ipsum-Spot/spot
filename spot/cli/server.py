@@ -46,7 +46,7 @@ def handle_post_request_movement():
     return jsonify({"message": f"Movement vector: {vect}"}), 200
 
 @app.route("/api/rotation", methods=["POST"])
-def handle_post_requers_rotate():
+def handle_post_request_rotate():
     if request.method != "POST":
         data = {"message": "Invalid request method from server (Movement)"}
         return jsonify(data), 200
@@ -64,7 +64,7 @@ def handle_post_requers_rotate():
     return jsonify({"message": f"Rotation: {dir}"}), 200
 
 @app.route("/api/updown", methods=["POST"])
-def handle_post_requers_rotate():
+def handle_post_request_updown():
     if request.method != "POST":
         data = {"message": "Invalid request method from server (Movement)"}
         return jsonify(data), 200
