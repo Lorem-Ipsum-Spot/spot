@@ -12,7 +12,8 @@ from bosdyn.client.lease import LeaseClient, LeaseKeepAlive
 from bosdyn.client.robot_command import RobotCommandClient
 from bosdyn.client.robot_state import RobotStateClient
 
-from spot.audio.main import listen_microphone
+from spot.audio.main import Listener
+from spot.cli.command import Command, str_to_command
 from spot.cli.curses import run_curses_gui
 from spot.cli.server import run_http_server
 from spot.cli.stopper import Stop
@@ -20,6 +21,14 @@ from spot.communication.estop import Estop
 from spot.movement.move import Move
 from spot.vision.get_image import get_complete_image
 from spot.vision.image_recognition import Direction, detect_lowerbody
+
+
+active_command = Command.STOP
+
+
+def handler(command: Command):
+    global active_command
+    active_command = command
 
 
 def main() -> None:
@@ -72,6 +81,8 @@ def main() -> None:
 
     stopper = Stop()
 
+    listener = Listener()
+
     create_ncurses_thread(estop_client, state_client, stopper)
 
     with LeaseKeepAlive(lease_client, must_acquire=True, return_at_exit=True):
@@ -84,9 +95,9 @@ def main() -> None:
         mover = Move(command_client)
         print("Movement controller ready")
 
-        create_http_thread(stopper, mover)
+        create_http_thread(stopper, handler)
 
-        main_event_loop(mover, image_client, stopper)
+        main_event_loop(mover, image_client, listener, stopper)
 
         print("Powering off...")
         robot.power_off(cut_immediately=False, timeout_sec=20)
@@ -96,7 +107,9 @@ def main() -> None:
     stopper.flag = True
 
 
-def main_event_loop(mover: Move, image_client: ImageClient, stopper: Stop) -> None:
+def main_event_loop(
+    mover: Move, image_client: ImageClient, listener: Listener, stopper: Stop
+) -> None:
     """
     Run a loop and process the commands from the user.
 
@@ -106,6 +119,8 @@ def main_event_loop(mover: Move, image_client: ImageClient, stopper: Stop) -> No
         The Move object to control the robot movement.
     image_client : ImageClient
         The ImageClient object to get the robot camera image.
+    listener : Listener
+        The Listener object to listen for speech commands.
     stopper : Stop
         The Stop object to monitor for stop request.
 
@@ -114,50 +129,69 @@ def main_event_loop(mover: Move, image_client: ImageClient, stopper: Stop) -> No
     mover.stand()
     print("Robot standing.")
 
-    time.sleep(3)
+    time.sleep(0.5)
     print("STARTING")
 
-    def follow() -> None:
-        while not stopper.flag:
-            command = listen_microphone()
-            if command == "stuj":
-                print("zastaven")
-                return
+    global active_command
 
-            # TODO: try the builtin solution
-            frame = get_complete_image(image_client)
+    def follow_cycle():
+        # TODO: try the builtin solution
+        frame = get_complete_image(image_client)
+        instruction = detect_lowerbody(frame)
 
-            instruction = detect_lowerbody(frame)
-            if not instruction:
-                return
+        match instruction:
+            case None:
+                active_command = Command.STOP
+            case Direction.LEFT:
+                mover.rotate_left()
+            case Direction.RIGHT:
+                mover.rotate_right()
+            case Direction.CENTER:
+                mover.forward()
 
-            match instruction:
-                case Direction.LEFT:
-                    mover.rotate_left()
-                case Direction.RIGHT:
-                    mover.rotate_right()
-                case Direction.CENTER:
-                    mover.forward()
+    def listener_callback(command_str: str):
+        command = str_to_command(command_str)
+
+        if command is None:
+            print(f"Command not recognized: {command}")
+            return
+
+        print(f"Command recognized: {command}")
+        active_command = command
+
+    listener.run(stopper, listener_callback)
 
     while not stopper.flag:
-        command = listen_microphone()
+        time.sleep(0.4)
 
-        commands = {
-            "dopředu": mover.forward,
-            "dozadu": mover.backward,
-            "sedni": mover.lay,
-            "lehni": mover.lay,
-            "stoupni": mover.stand,
-            "následuj": follow,
-        }
-
-        if command is None or command not in commands:
-            print(f"Command not recognized: {command}")
-            continue
-
-        commands[command]()
-
-        # if necesary add sleep(3)
+        match active_command:
+            case Command.STOP:
+                continue
+            case Command.FORWARD:
+                mover.forward()
+            case Command.BACKWARD:
+                mover.backward()
+            case Command.LEFT:
+                mover.left()
+            case Command.RIGHT:
+                mover.right()
+            case Command.STAND:
+                mover.stand()
+                active_command = Command.STOP
+            case Command.SIT:
+                mover.sit()
+                active_command = Command.STOP
+            case Command.ROTATE_LEFT:
+                mover.rotate_left()
+                active_command = Command.STOP
+            case Command.ROTATE_RIGHT:
+                mover.rotate_right()
+                active_command = Command.STOP
+            case Command.FOLLOWING:
+                follow_cycle()
+            case _:
+                print(f"Command not recognized: {active_command}")
+                continue
 
 
 C = TypeVar("C", bound=BaseClient)

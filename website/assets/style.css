@@ -112,14 +112,14 @@ body
     color: var(--colorprimary);
 }
 
-.extendedMovementButton
+.UpDownButton
 {
     background-color: transparent;
     color: var(--colorprimary);
     border: solid 5px var(--colorprimary);
 }
 
-.extendedMovementButton:active
+.UpDownButton:active
 {
     background-color: var(--colorprimary);
     color: white;

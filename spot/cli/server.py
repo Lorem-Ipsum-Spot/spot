@@ -6,18 +6,13 @@ from flask import Response, jsonify, request
 from spot.cli.stopper import Stop
 from spot.communication import HttpServer
 from spot.communication.http import app
-from spot.movement.move import Move
+from spot.communication import HttpServer
+from spot.cli.command import Command
+
+HANDLER: Callable[[Command], None]
 
 
-def test_handler() -> str:
-    """Test handler for HTTP server."""
-    return "Hello from CLI!"
-
-
-MOVER: Move
-
-
-def run_http_server(stopper: Stop, mover: Move) -> None:
+def run_http_server(stopper: Stop, handler: Callable[[Command], None]) -> None:
     """
     Run the HTTP server.
 
@@ -25,23 +20,21 @@ def run_http_server(stopper: Stop, mover: Move) -> None:
     ----------
     stopper : Stop
         The Stop object to monitor for stop request.
-    mover : Move
-        The Move object to control the robot movement.
+    handler : Callable[[Command], None]
+        The function to call when a command is received.
 
     """
-    global MOVER
-    MOVER = mover
+    global HANDLER
+    HANDLER = handler
 
-    HttpServer.add_handle("/cli", test_handler)
     HttpServer.run(host="0.0.0.0", port=4321)
 
-    while not stopper.flag:
-        time.sleep(1)
-
-    sys.exit(0)
+    exit(0)
 
 
 # ------- Handling HTTP requests from client -------
+
+# ----- Small buttons
 
 
 @app.route("/api/movement", methods=["POST"])
@@ -62,24 +55,61 @@ def handle_post_request_movement() -> tuple[Response, int]:
     data = request.get_json()
     vect = data.get("dir")
 
-    x, y, z = vect
+    # x je dopredu dozadu
+    x, y = vect
 
-    if x > 0:
-        MOVER.right()
-    if x < 0:
-        MOVER.left()
-
-    if y > 0:
-        MOVER.forward()
-    if y < 0:
-        MOVER.backward()
-
-    if z > 0:
-        MOVER.stand()
-    if z < 0:
-        MOVER.sit()
+    if x != 0 or y != 0:
+        if y > 0:
+            HANDLER(Command.LEFT)
+        if y < 0:
+            HANDLER(Command.RIGHT)
+        if x > 0:
+            HANDLER(Command.FORWARD)
+        if x < 0:
+            HANDLER(Command.BACKWARD)
+    else:
+        HANDLER(Command.STOP)
 
     return jsonify({"message": f"Movement vector: {vect}"}), 200
+
+
+@app.route("/api/rotation", methods=["POST"])
+def handle_post_request_rotate():
+    if request.method != "POST":
+        data = {"message": "Invalid request method from server (Movement)"}
+        return jsonify(data), 200
+
+    data = request.get_json()
+    direction = data.get("direction")
+
+    if direction > 0:
+        HANDLER(Command.ROTATE_LEFT)
+    elif direction < 0:
+        HANDLER(Command.ROTATE_RIGHT)
+    else:
+        HANDLER(Command.STOP)
+
+    return jsonify({"message": f"Rotation: {direction}"}), 200
+
+
+@app.route("/api/updown", methods=["POST"])
+def handle_post_request_updown():
+    if request.method != "POST":
+        data = {"message": "Invalid request method from server (Movement)"}
+        return jsonify(data), 200
+
+    data = request.get_json()
+    stand = data.get("stand")
+
+    if not stand:
+        HANDLER(Command.SIT)
+    else:
+        HANDLER(Command.STAND)
+
+    return jsonify({"message": f"Spot shoud now be standing is: {stand}"}), 200
+
+
+# ----- Big buttons -----
 
 
 @app.route("/api/followingStatus", methods=["POST"])
@@ -143,9 +173,6 @@ def handle_post_request_stop() -> tuple[Response, int]:
         data = {"message": "Invalid request method from server (Stop)"}
         return jsonify(data), 200
 
-    data = request.get_json()
-    stop = data.get("stop")
-
-    print("Spots operator wants it to STOP immediately!")
+    HANDLER(Command.STAND)
 
     return jsonify({"message": "Spots operator wants it to STOP immediately!"}), 200
