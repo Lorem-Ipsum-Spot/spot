@@ -1,9 +1,16 @@
     BUTTONS         JSON label      JSON value      Websocket
+    -Vector
     Forward         x               1
     Back            x               -1
     Left            y               1
     Right           y               -1
-    Up              z               1
-    Down            z               -1
+    -VectorEnd
+
+    Stand                           1
+    Lay                             0
+
+    RotateLeft                      1
+    RotateRight                     -1
+
     FollowMe        FollowMe        True/False
     MicOn/Off                                       x

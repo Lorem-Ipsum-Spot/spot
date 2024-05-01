@@ -86,7 +86,7 @@ body
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr 1fr;
-    grid-template-areas: ". buttonForward buttonUp" "buttonLeft . buttonRight" ". buttonBackward buttonDown";
+    grid-template-areas: "buttonRotateLeft buttonForward buttonRotateRight" "buttonLeft . buttonRight" "buttonDown buttonBackward buttonUp";
     grid-gap: 0.5em;
     padding: 0.5em;
 
@@ -112,24 +112,37 @@ body
     color: var(--colorprimary);
 }
 
+.rotateButton
+{
+    background-color: transparent;
+    color: var(--colorprimary);
+    border: solid 5px var(--colorprimary);
+}
+
+.rotateButton:active
+{
+    background-color: var(--colorprimary);
+    color: white;
+}
+
 #buttonForward
 {
-grid-area: buttonForward;
+    grid-area: buttonForward;
 }
 
 #buttonBackward
 {
-grid-area: buttonBackward;
+    grid-area: buttonBackward;
 }
 
 #buttonLeft
 {
-grid-area: buttonLeft;
+    grid-area: buttonLeft;
 }
 
 #buttonRight
 {
-grid-area: buttonRight;
+    grid-area: buttonRight;
 }
 
 #buttonUp
@@ -140,6 +153,16 @@ grid-area: buttonRight;
 #buttonDown
 {
     grid-area: buttonDown;
+}
+
+#buttonRotateLeft
+{
+    grid-area: buttonRotateLeft;
+}
+
+#buttonRotateRight
+{
+    grid-area: buttonRotateRight;
 }
 
 @media (orientation: portrait) {

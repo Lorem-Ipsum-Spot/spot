@@ -66,3 +66,8 @@ function MovementButtonUp(element,direction)
     element.classList.remove("movementButtonActive");
     element.classList.add("movementButtonUnactive");
 }
+
+function Rotate(rotation)
+{
+    //TODO send rotate 
+}
