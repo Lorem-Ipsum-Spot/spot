@@ -2,6 +2,8 @@ from enum import Enum
 
 
 class Command(Enum):
+    """Enum representing different commands that can be executed."""
+
     LEFT = 0
     RIGHT = 1
     FORWARD = 2
@@ -31,4 +33,18 @@ commands_map = {
 
 
 def str_to_command(command: str) -> Command | None:
+    """
+    Convert a string to a Command.
+
+    Parameters
+    ----------
+    command : str
+        The string to convert.
+
+    Returns
+    -------
+    Command | None
+        The Command object or None if the command is not recognized.
+
+    """
     return commands_map.get(command)
