@@ -37,11 +37,15 @@ def handle_post_request_movement():
         HANDLER(Command.RIGHT)
     if x < 0:
         HANDLER(Command.LEFT)
+    else:
+        HANDLER(Command.STOP)
 
     if y > 0:
         HANDLER(Command.FORWARD)
     if y < 0:
         HANDLER(Command.BACKWARD)
+    else:
+        HANDLER(Command.STOP)
 
     return jsonify({"message": f"Movement vector: {vect}"}), 200
 
@@ -52,16 +56,16 @@ def handle_post_request_rotate():
         return jsonify(data), 200
 
     data = request.get_json()
-    dir = data.get("direction")
+    direction = data.get("direction")
 
-    if dir > 0:
+    if direction > 0:
         HANDLER(Command.LEFT)
-    elif dir < 0:
+    elif direction < 0:
         HANDLER(Command.RIGHT)
     else:
         return jsonify({"message": "Got 0 for rotation > impossible."}), 200
 
-    return jsonify({"message": f"Rotation: {dir}"}), 200
+    return jsonify({"message": f"Rotation: {direction}"}), 200
 
 @app.route("/api/updown", methods=["POST"])
 def handle_post_request_updown():
@@ -115,9 +119,6 @@ def handle_post_request_stop():
         data = {"message": "Invalid request method from server (Stop)"}
         return jsonify(data), 200
 
-    data = request.get_json()
-    stop = data.get("stop")
-
-    print(f"Spots operator wants it to STOP immediately!")
+    HANDLER(Command.STOP)
 
     return jsonify({"message": f"Spots operator wants it to STOP immediately!"}), 200
