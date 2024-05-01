@@ -1,18 +1,16 @@
 import sys
-import time
+from collections.abc import Callable
 
 from flask import Response, jsonify, request
 
-from spot.cli.stopper import Stop
+from spot.cli.command import Command
 from spot.communication import HttpServer
 from spot.communication.http import app
-from spot.communication import HttpServer
-from spot.cli.command import Command
 
 HANDLER: Callable[[Command], None]
 
 
-def run_http_server(stopper: Stop, handler: Callable[[Command], None]) -> None:
+def run_http_server(handler: Callable[[Command], None]) -> None:
     """
     Run the HTTP server.
 
@@ -29,7 +27,7 @@ def run_http_server(stopper: Stop, handler: Callable[[Command], None]) -> None:
 
     HttpServer.run(host="0.0.0.0", port=4321)
 
-    exit(0)
+    sys.exit(0)
 
 
 # ------- Handling HTTP requests from client -------
@@ -74,7 +72,8 @@ def handle_post_request_movement() -> tuple[Response, int]:
 
 
 @app.route("/api/rotation", methods=["POST"])
-def handle_post_request_rotate():
+def handle_post_request_rotate() -> tuple[Response, int]:
+    """Handle the POST request for rotation."""
     if request.method != "POST":
         data = {"message": "Invalid request method from server (Movement)"}
         return jsonify(data), 200
@@ -93,7 +92,8 @@ def handle_post_request_rotate():
 
 
 @app.route("/api/updown", methods=["POST"])
-def handle_post_request_updown():
+def handle_post_request_updown() -> tuple[Response, int]:
+    """Handle the POST request for standing/laying."""
     if request.method != "POST":
         data = {"message": "Invalid request method from server (Movement)"}
         return jsonify(data), 200

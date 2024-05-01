@@ -22,11 +22,11 @@ from spot.movement.move import Move
 from spot.vision.get_image import get_complete_image
 from spot.vision.image_recognition import Direction, detect_lowerbody
 
-
 active_command = Command.STOP
 
 
-def handler(command: Command):
+def handler(command: Command) -> None:
+    """Change active command."""
     global active_command
     active_command = command
 
@@ -95,7 +95,7 @@ def main() -> None:
         mover = Move(command_client)
         print("Movement controller ready")
 
-        create_http_thread(stopper, handler)
+        create_http_thread()
 
         main_event_loop(mover, image_client, listener, stopper)
 
@@ -108,7 +108,10 @@ def main() -> None:
 
 
 def main_event_loop(
-    mover: Move, image_client: ImageClient, listener: Listener, stopper: Stop
+    mover: Move,
+    image_client: ImageClient,
+    listener: Listener,
+    stopper: Stop,
 ) -> None:
     """
     Run a loop and process the commands from the user.
@@ -134,10 +137,12 @@ def main_event_loop(
 
     global active_command
 
-    def follow_cycle():
+    def follow_cycle() -> None:
         # TODO: try the builtin solution
         frame = get_complete_image(image_client)
         instruction = detect_lowerbody(frame)
+
+        global active_command
 
         match instruction:
             case None:
@@ -149,7 +154,7 @@ def main_event_loop(
             case Direction.CENTER:
                 mover.forward()
 
-    def listener_callback(command_str: str):
+    def listener_callback(command_str: str) -> None:
         command = str_to_command(command_str)
 
         if command is None:
@@ -157,7 +162,6 @@ def main_event_loop(
             return
 
         print(f"Command recognized: {command}")
-        active_command = command
 
     listener.run(stopper, listener_callback)
 
@@ -199,7 +203,7 @@ C = TypeVar("C", bound=BaseClient)
 
 def robot_client_ensurer(robot: Robot) -> Callable[[type[C]], C]:
     """
-    Decorator to ensure the client is initialized.
+    Create curried function that ensure a client is loaded.
 
     Parameters
     ----------
@@ -246,7 +250,7 @@ def load_credentials_from_file(credentials: str) -> tuple[str, str]:
         return name, password
 
 
-def create_http_thread(stopper: Stop, mover: Move) -> Thread:
+def create_http_thread() -> Thread:
     """
     Create a thread to run the HTTP server.
 
@@ -267,7 +271,7 @@ def create_http_thread(stopper: Stop, mover: Move) -> Thread:
     def wrapper() -> None:
         print("Starting HTTP server")
         time.sleep(1)
-        return run_http_server(stopper, mover)
+        return run_http_server(handler)
 
     process = Thread(target=wrapper)
     process.start()
