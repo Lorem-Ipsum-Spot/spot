@@ -117,7 +117,6 @@ def main_event_loop(
 
         match instruction:
             case None:
-                nonlocal active_command
                 active_command = Command.STOP
             case Direction.LEFT:
                 mover.rotate_left()
@@ -134,7 +133,6 @@ def main_event_loop(
             return
 
         print(f"Command recognized: {command}")
-        nonlocal active_command
         active_command = command
 
     listener.run(stopper, listener_callback)
