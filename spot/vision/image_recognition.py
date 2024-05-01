@@ -19,6 +19,8 @@ X_DIRECTION_OFFSET = 0
 
 
 class Direction(IntEnum):
+    """Enum for direction."""
+
     LEFT = -1
     CENTER = 0
     RIGHT = 1
@@ -28,6 +30,20 @@ clf = cv2.CascadeClassifier(str(PATH_TO_MODEL))
 
 
 def detect_lowerbody(frame: MatLike) -> Direction | None:
+    """
+    Detect the lower body in the frame.
+
+    Parameters
+    ----------
+    frame : MatLike
+        The frame to detect the lower body in.
+
+    Returns
+    -------
+    Direction | None
+        The direction of the lower body or None if not detected.
+
+    """
     # TODO: mozna zbytecny
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     legs = clf.detectMultiScale(

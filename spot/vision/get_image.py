@@ -26,8 +26,18 @@ from scipy import ndimage
 
 def get_complete_image(image_client: ImageClient) -> np.ndarray:
     """
-    take image_client
-    return jpg.
+    Get the complete image from the spot camera.
+
+    Parameters
+    ----------
+    image_client : ImageClient
+        The image client to get the image from.
+
+    Returns
+    -------
+    np.ndarray
+        The complete image from the spot camera.
+
     """
     image_from_spot = get_image_from_spot(image_client, "frontleft_fisheye_image")
     return image_to_opencv(image_from_spot)
@@ -82,10 +92,13 @@ def image_to_opencv(image, auto_rotate=True) -> np.ndarray:
 
 
 def get_image_from_spot(
-    client: ImageClient, camera="frontleft_fisheye_image", quality=100,
+    client: ImageClient,
+    camera="frontleft_fisheye_image",
+    quality=100,
 ):
     image_request = image_pb2.ImageRequest(
-        image_source_name=camera, quality_percent=quality,
+        image_source_name=camera,
+        quality_percent=quality,
     )
     image_responses = client.get_image([image_request])
 
