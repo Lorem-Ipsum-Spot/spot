@@ -20,28 +20,32 @@
             onmouseup="MovementButtonUp(this,1)"
             onmouseout="MovementButtonUp(this,1)"
             class="movementButton movementButtonUnactive">
-            Forward</button>
+            <object data="graphics/arrow.svg" width="80%" height="80%"></object>
+            </button>
         <button
             id="buttonBackward"
             onmousedown ="MovementButtonDown(this,-1)"
             onmouseup="MovementButtonUp(this,-1)"
             onmouseout="MovementButtonUp(this,-1)"
             class="movementButton movementButtonUnactive">
-            Backward</button>
+            <object style="transform: rotate(180deg);"data="graphics/arrow.svg" width="80%" height="80%"></object>
+            </button>
         <button
             id="buttonRight"
             onmousedown ="MovementButtonDown(this,-2)"
             onmouseup="MovementButtonUp(this,-2)"
             onmouseout="MovementButtonUp(this,-2)"
             class="movementButton movementButtonUnactive">
-            Right</button>
+            <object style="transform: rotate(90deg);"data="graphics/arrow.svg" width="80%" height="80%"></object>
+            </button>
         <button
             id="buttonLeft"
             onmousedown ="MovementButtonDown(this,2)"
             onmouseup="MovementButtonUp(this,2)"
             onmouseout="MovementButtonUp(this,2)"
             class="movementButton movementButtonUnactive">
-            Left</button>
+            <object style="transform: rotate(-90deg);"data="graphics/arrow.svg" width="80%" height="80%"></object>
+            </button>
         <button
             id="buttonUp"
             onclick="UpDownButton(this,true)"
@@ -58,15 +62,16 @@
             onmouseup="RotationButtonUp(this,1)"
             onmouseout="RotationButtonUp(this,1)"
             class="movementButton movementButtonUnactive">
-            Turn Left</button>
+            <object data="graphics/arrowTurn.svg" width="80%" height="80%"></object>
+            </button>
         <button
             id="buttonRotateRight"
             onmousedown ="RotationButtonDown(this,-1)"
             onmouseup="RotationButtonUp(this,-1)"
             onmouseout="RotationButtonUp(this,-1)"
             class="movementButton movementButtonUnactive">
-            Turn Right</button>
-        
+            <object style="transform: scaleX(-100%);"data="graphics/arrowTurn.svg" width="80%" height="80%"></object>
+            </button>
     </div>
 </div>
 </body>

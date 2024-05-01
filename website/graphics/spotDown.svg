@@ -1,0 +1,56 @@
+<svg
+    width="100"
+    height="100"
+    viewBox="0 0 100 100"
+    id="svg1"
+    xmlns="http://www.w3.org/2000/svg"
+    xmlns:svg="http://www.w3.org/2000/svg">
+    <defs
+        id="defs1" />
+        <g
+        id="g1">
+            <rect
+                style="fill: transparent;stroke: darkorange;stroke-width:5;stroke-linecap:square"
+                id="rect1"
+                width="90"
+                height="30"
+                x="5"
+                y="50" />
+            <g
+            id="frontleg">
+            <path
+                style="fill:none;stroke:darkorange;stroke-width:5;"
+                id="frontUpLeg"
+                d="m 20,65 20,25 z" />
+            <path
+                style="fill:none;stroke:darkorange;stroke-width:5;"
+                id="frontDownLeg"
+                d="m 10,90 30,0 z" />
+            </g>
+            <g transform="translate(55,0)"
+            id="backleg">
+            <path
+                style="fill:none;stroke:darkorange;stroke-width:5;"
+                id="backUpLeg"
+                d="m 20,65 20,25 z" />
+            <path
+                style="fill:none;stroke:darkorange;stroke-width:5;"
+                id="backDownLeg"
+                d="m 10,90 30,0 z" />
+            </g>
+            <g
+            id="arrow">
+                <rect
+                    style="fill: darkorange;stroke-width:10;stroke-linecap:square"
+                    id="rect1"
+                    width="10"
+                    height="21"
+                    x="45"
+                    y="0" />
+                <path
+                    style="fill:darkorange;stroke-width:10;stroke-linecap:square"
+                    id="path1"
+                    d="m 50,40 10,-20 -20,0 z" />
+            </g>
+        </g>
+</svg>
