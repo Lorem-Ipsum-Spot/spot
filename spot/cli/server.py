@@ -1,7 +1,7 @@
 import sys
 import time
 
-from flask import jsonify, request
+from flask import Response, jsonify, request
 
 from spot.cli.stopper import Stop
 from spot.communication import HttpServer
@@ -10,6 +10,7 @@ from spot.movement.move import Move
 
 
 def test_handler() -> str:
+    """Test handler for HTTP server."""
     return "Hello from CLI!"
 
 
@@ -17,6 +18,17 @@ MOVER: Move
 
 
 def run_http_server(stopper: Stop, mover: Move) -> None:
+    """
+    Run the HTTP server.
+
+    Parameters
+    ----------
+    stopper : Stop
+        The Stop object to monitor for stop request.
+    mover : Move
+        The Move object to control the robot movement.
+
+    """
     global MOVER
     MOVER = mover
 
@@ -33,7 +45,16 @@ def run_http_server(stopper: Stop, mover: Move) -> None:
 
 
 @app.route("/api/movement", methods=["POST"])
-def handle_post_request_movement():
+def handle_post_request_movement() -> tuple[Response, int]:
+    """
+    Handle the POST request for movement.
+
+    Returns
+    -------
+    tuple[Response, int]
+        The response and status code.
+
+    """
     if request.method != "POST":
         data = {"message": "Invalid request method from server (Movement)"}
         return jsonify(data), 200
@@ -62,7 +83,16 @@ def handle_post_request_movement():
 
 
 @app.route("/api/followingStatus", methods=["POST"])
-def handle_post_request_following():
+def handle_post_request_following() -> tuple[Response, int]:
+    """
+    Handle the POST request for following.
+
+    Returns
+    -------
+    tuple[Response, int]
+        The response and status code.
+
+    """
     if request.method != "POST":
         data = {"message": "Invalid request method from server (Follow)"}
         return jsonify(data), 200
@@ -76,7 +106,16 @@ def handle_post_request_following():
 
 
 @app.route("/api/listeningStatus", methods=["POST"])
-def handle_post_request_listening():
+def handle_post_request_listening() -> tuple[Response, int]:
+    """
+    Handle the POST request for listening.
+
+    Returns
+    -------
+    tuple[Response, int]
+        The response and status code.
+
+    """
     if request.method != "POST":
         data = {"message": "Invalid request method from server (Listen)"}
         return jsonify(data), 200
@@ -90,7 +129,16 @@ def handle_post_request_listening():
 
 
 @app.route("/api/stop", methods=["POST"])
-def handle_post_request_stop():
+def handle_post_request_stop() -> tuple[Response, int]:
+    """
+    Handle the POST request for stopping.
+
+    Returns
+    -------
+    tuple[Response, int]
+        The response and status code.
+
+    """
     if request.method != "POST":
         data = {"message": "Invalid request method from server (Stop)"}
         return jsonify(data), 200
