@@ -31,6 +31,6 @@ wrapt==1.16.0
 PyAudio==0.2.14
 SpeechRecognition==3.10.1
 opencv-python==4.9.0.80
-vosk==0.3.45
+vosk==0.3.44
 scipy==1.13.0
 ruff==0.4.2

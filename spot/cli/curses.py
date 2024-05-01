@@ -9,8 +9,24 @@ from spot.cli.stopper import Stop
 from spot.communication.estop import Estop
 
 
-def run_curses_gui(estop_client: Estop, state_client: RobotStateClient, stopper: Stop) -> None:
-    # Initialize curses screen display
+def run_curses_gui(
+    estop_client: Estop,
+    state_client: RobotStateClient,
+    stopper: Stop,
+) -> None:
+    """
+    Run the curses GUI to monitor the estop status and trigger estop.
+
+    Parameters
+    ----------
+    estop_client : Estop
+        The Estop object to trigger and release estop.
+    state_client : RobotStateClient
+        The RobotStateClient object to get the robot state.
+    stopper : Stop
+        The Stop object to monitor for stop request.
+
+    """
     stdscr = curses.initscr()
 
     def cleanup(msg: str) -> None:
@@ -24,7 +40,7 @@ def run_curses_gui(estop_client: Estop, state_client: RobotStateClient, stopper:
         curses.endwin()
         print(msg)
 
-    def clean_exit(msg="") -> None:
+    def clean_exit(msg: str = "") -> None:
         cleanup(msg)
         sys.exit(0)
 
