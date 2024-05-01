@@ -34,17 +34,15 @@ def handle_post_request_movement():
     # x je dopredu dozadu
     x, y = vect
 
-    if y > 0:
-        HANDLER(Command.RIGHT)
-    if y < 0:
-        HANDLER(Command.LEFT)
-    else:
-        HANDLER(Command.STOP)
-
-    if x > 0:
-        HANDLER(Command.FORWARD)
-    if x < 0:
-        HANDLER(Command.BACKWARD)
+    if (x != 0 or y != 0):
+        if y > 0:
+            HANDLER(Command.RIGHT)
+        if y < 0:
+            HANDLER(Command.LEFT)
+        if x > 0:
+            HANDLER(Command.FORWARD)
+        if x < 0:
+            HANDLER(Command.BACKWARD)
     else:
         HANDLER(Command.STOP)
 
