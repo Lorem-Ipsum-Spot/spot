@@ -23,9 +23,13 @@ from spot.vision.get_image import get_complete_image
 from spot.vision.image_recognition import detect_lowerbody, Direction
 
 
-def handler(command:Command):
-    print(command)
-        
+active_command = Command.STOP
+
+
+def handler(command: Command):
+    global active_command
+    active_command = command
+
 
 def main():
     parser = ArgumentParser()
@@ -104,7 +108,7 @@ def main_event_loop(
     time.sleep(0.5)
     print("STARTING")
 
-    active_command = Command.STOP
+    global active_command
 
     def follow_cycle():
         # TODO: try the builtin solution
