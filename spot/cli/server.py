@@ -37,9 +37,9 @@ def handle_post_request_movement():
 
     if x != 0 or y != 0:
         if y > 0:
-            HANDLER(Command.RIGHT)
-        if y < 0:
             HANDLER(Command.LEFT)
+        if y < 0:
+            HANDLER(Command.RIGHT)
         if x > 0:
             HANDLER(Command.FORWARD)
         if x < 0:
