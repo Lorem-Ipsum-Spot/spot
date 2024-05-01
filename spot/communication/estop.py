@@ -1,16 +1,36 @@
+from bosdyn.client import Robot
 from bosdyn.client.estop import EstopClient, EstopEndpoint, EstopKeepAlive
 
 
 class Estop:
-    """Provides a software estop without a GUI.
+    """
+    Provides a software estop without a GUI.
 
-    To use this estop, create an instance of the EstopNoGui class and use the stop() and allow()
-    functions programmatically.
+    To use this estop, create an instance of the EstopNoGui class and use the stop()
+    and allow() functions programmatically.
     """
 
     keepalive: EstopKeepAlive
 
-    def __init__(self, robot, timeout_sec, name=None):
+    def __init__(
+        self,
+        robot: Robot,
+        timeout_sec: float,
+        name: str | None = None,
+    ) -> None:
+        """
+        Create an instance of the Estop class.
+
+        Parameters
+        ----------
+        robot : Robot
+            The robot to estop.
+        timeout_sec : float
+            The time in seconds to wait before estop.
+        name : str, optional
+            The name of the estop endpoint.
+
+        """
         client = robot.ensure_client(EstopClient.default_service_name)
 
         # Force server to set up a single endpoint system
@@ -23,18 +43,14 @@ class Estop:
         # Release the estop
         self.estop_keep_alive.allow()
 
-    def __enter__(self):
-        pass
-
-    def __exit__(self, _exc_type, _exc_val, _exc_tb):
-        """Cleanly shut down estop on exit."""
-        self.estop_keep_alive.shutdown()
-
-    def stop(self):
+    def stop(self) -> None:
+        """Cut the estop."""
         self.estop_keep_alive.stop()
 
-    def allow(self):
+    def allow(self) -> None:
+        """Allow the robot to move."""
         self.estop_keep_alive.allow()
 
-    def settle_then_cut(self):
+    def settle_then_cut(self) -> None:
+        """Settle the estop, then cut it."""
         self.estop_keep_alive.settle_then_cut()

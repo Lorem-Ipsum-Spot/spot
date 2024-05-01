@@ -26,8 +26,18 @@ from scipy import ndimage
 
 def get_complete_image(image_client: ImageClient) -> np.ndarray:
     """
-    take image_client
-    return jpg
+    Get the complete image from the spot camera.
+
+    Parameters
+    ----------
+    image_client : ImageClient
+        The image client to get the image from.
+
+    Returns
+    -------
+    np.ndarray
+        The complete image from the spot camera.
+
     """
     image_from_spot = get_image_from_spot(image_client, "frontleft_fisheye_image")
     return image_to_opencv(image_from_spot)
@@ -44,7 +54,6 @@ ROTATION_ANGLE = {
 
 def image_to_opencv(image, auto_rotate=True) -> np.ndarray:
     """Convert an image proto message to an openCV image."""
-
     num_channels = 1  # Assume a default of 1 byte encodings.
     pixel_format = image.shot.image.pixel_format
 
@@ -70,7 +79,7 @@ def image_to_opencv(image, auto_rotate=True) -> np.ndarray:
         try:
             # Attempt to reshape array into an RGB rows X cols shape.
             decoded_image = decoded_image.reshape(
-                (image.shot.image.rows, image.shot.image.cols, num_channels)
+                (image.shot.image.rows, image.shot.image.cols, num_channels),
             )
         except ValueError:
             # Unable to reshape the image data, trying a regular decode.
@@ -83,10 +92,13 @@ def image_to_opencv(image, auto_rotate=True) -> np.ndarray:
 
 
 def get_image_from_spot(
-    client: ImageClient, camera="frontleft_fisheye_image", quality=100
+    client: ImageClient,
+    camera: str = "frontleft_fisheye_image",
+    quality: int = 100,
 ):
     image_request = image_pb2.ImageRequest(
-        image_source_name=camera, quality_percent=quality
+        image_source_name=camera,
+        quality_percent=quality,
     )
     image_responses = client.get_image([image_request])
 
@@ -135,7 +147,7 @@ def get_image_from_spot_B(image_client, camera:str, im_res:int = 100):
 
         img = np.frombuffer(image.shot.image.data, dtype=dtype)
         if image.shot.image.format == image_pb2.Image.FORMAT_RAW:
-            try: 
+            try:
                 img = img.reshape((image.shot.image.rows, image.shot.image.cols, num_bytes))
             except ValueError:
                 img = cv2.imdecode(img, -1)
