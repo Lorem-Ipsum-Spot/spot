@@ -112,14 +112,14 @@ body
     color: var(--colorprimary);
 }
 
-.upDownButton
+.UpDownButton
 {
     background-color: transparent;
     color: var(--colorprimary);
     border: solid 5px var(--colorprimary);
 }
 
-.upDownButton:active
+.UpDownButton:active
 {
     background-color: var(--colorprimary);
     color: white;
