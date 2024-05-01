@@ -20,52 +20,32 @@
             onmouseup="MovementButtonUp(this,1)"
             onmouseout="MovementButtonUp(this,1)"
             class="movementButton movementButtonUnactive">
-            <svg
-            width="100"
-            height="100"
-            viewBox="0 0 100 100"
-            id="svg1"
-            xmlns="http://www.w3.org/2000/svg"
-            xmlns:svg="http://www.w3.org/2000/svg">
-            <defs
-                id="defs1" />
-                <g
-                id="g1">
-                    <rect
-                        style="fill: darkorange;stroke-width:10;stroke-linecap:square"
-                        id="rect1"
-                        width="20"
-                        height="60"
-                        x="40"
-                        y="40" />
-                    <path
-                        style="fill:darkorange;stroke-width:10;stroke-linecap:square"
-                        id="path1"
-                        d="m 0,0 -50,0 25,-41 z"
-                        transform="translate(75,41)" />
-                </g>
-            </svg></button>
+            <object data="graphics/arrow.svg" width="80%" height="80%"></object>
+            </button>
         <button
             id="buttonBackward"
             onmousedown ="MovementButtonDown(this,-1)"
             onmouseup="MovementButtonUp(this,-1)"
             onmouseout="MovementButtonUp(this,-1)"
             class="movementButton movementButtonUnactive">
-            Backward</button>
+            <object style="transform: rotate(180deg);"data="graphics/arrow.svg" width="80%" height="80%"></object>
+            </button>
         <button
             id="buttonRight"
             onmousedown ="MovementButtonDown(this,-2)"
             onmouseup="MovementButtonUp(this,-2)"
             onmouseout="MovementButtonUp(this,-2)"
             class="movementButton movementButtonUnactive">
-            Right</button>
+            <object style="transform: rotate(90deg);"data="graphics/arrow.svg" width="80%" height="80%"></object>
+            </button>
         <button
             id="buttonLeft"
             onmousedown ="MovementButtonDown(this,2)"
             onmouseup="MovementButtonUp(this,2)"
             onmouseout="MovementButtonUp(this,2)"
             class="movementButton movementButtonUnactive">
-            Left</button>
+            <object style="transform: rotate(-90deg);"data="graphics/arrow.svg" width="80%" height="80%"></object>
+            </button>
         <button
             id="buttonUp"
             onclick="UpDownButton(this,true)"
