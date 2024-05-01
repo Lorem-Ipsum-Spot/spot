@@ -44,27 +44,23 @@
             Left</button>
         <button
             id="buttonUp"
-            onmousedown ="MovementButtonDown(this,3)"
-            onmouseup="MovementButtonUp(this,3)"
-            onmouseout="MovementButtonUp(this,3)"
-            class="movementButton movementButtonUnactive">
-            Up</button>
+            onclick="UpDownButton(this,true)"
+            class="extendedMovementButton">
+            Stand</button>
         <button
             id="buttonDown"
-            onmousedown ="MovementButtonDown(this,-3)"
-            onmouseup="MovementButtonUp(this,-3)"
-            onmouseout="MovementButtonUp(this,-3)"
-            class="movementButton movementButtonUnactive">
-            Down</button>
+            onclick="UpDownButton(this,false)"
+            class="extendedMovementButton">
+            Lay down</button>
         <button
             id="buttonRotateLeft"
-            onclick="Rotate(1)"
-            class="rotateButton">
+            onclick="Rotate(this,1)"
+            class="extendedMovementButton">
             Turn Left</button>
         <button
             id="buttonRotateRight"
-            onclick="Rotate(-1)"
-            class="rotateButton">
+            onclick="Rotate(this,-1)"
+            class="extendedMovementButton">
             Turn Right</button>
         
     </div>

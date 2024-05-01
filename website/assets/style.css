@@ -112,14 +112,14 @@ body
     color: var(--colorprimary);
 }
 
-.rotateButton
+.extendedMovementButton
 {
     background-color: transparent;
     color: var(--colorprimary);
     border: solid 5px var(--colorprimary);
 }
 
-.rotateButton:active
+.extendedMovementButton:active
 {
     background-color: var(--colorprimary);
     color: white;
