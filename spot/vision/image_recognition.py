@@ -5,15 +5,6 @@ import cv2
 import numpy as np
 from paddleocr import PaddleOCR, draw_ocr
 
-PATH_TO_MODEL = (
-    pathlib.Path(cv2.__file__).parent.absolute() / "data" / "haarcascade_lowerbody.xml"
-)
-"""
-"lowerbody"
-"frontalface_default"
-"eye"
-"""
-
 # compensate for camera direction
 # TODO: figure out best value
 X_DIRECTION_OFFSET = 0
