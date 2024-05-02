@@ -13,7 +13,7 @@ from bosdyn.client.robot_command import RobotCommandClient
 from bosdyn.client.robot_state import RobotStateClient
 
 from spot.audio.main import Listener
-from spot.cli.command import Command, str_to_command
+from spot.cli.command import Command, str_to_command, KEYWORDS
 from spot.cli.curses import run_curses_gui
 from spot.cli.server import run_http_server
 from spot.cli.stopper import Stop
@@ -81,8 +81,6 @@ def main() -> None:
 
     stopper = Stop()
 
-    listener = Listener()
-
     create_ncurses_thread(estop_client, state_client, stopper)
 
     with LeaseKeepAlive(lease_client, must_acquire=True, return_at_exit=True):
@@ -97,7 +95,7 @@ def main() -> None:
 
         create_http_thread()
 
-        main_event_loop(mover, image_client, listener, stopper)
+        main_event_loop(mover, image_client, stopper)
 
         print("Powering off...")
         robot.power_off(cut_immediately=False, timeout_sec=20)
@@ -110,7 +108,6 @@ def main() -> None:
 def main_event_loop(
     mover: Move,
     image_client: ImageClient,
-    listener: Listener,
     stopper: Stop,
 ) -> None:
     """
@@ -122,8 +119,6 @@ def main_event_loop(
         The Move object to control the robot movement.
     image_client : ImageClient
         The ImageClient object to get the robot camera image.
-    listener : Listener
-        The Listener object to listen for speech commands.
     stopper : Stop
         The Stop object to monitor for stop request.
 
@@ -163,6 +158,7 @@ def main_event_loop(
 
         print(f"Command recognized: {command}")
 
+    listener = Listener(KEYWORDS)
     listener.run(stopper, listener_callback)
 
     while not stopper.flag:

@@ -16,20 +16,22 @@ class Command(Enum):
     ROTATE_RIGHT = 9
 
 
-commands_map = {
-    "dopředu": Command.FORWARD,
-    "dozadu": Command.BACKWARD,
-    "sedni": Command.SIT,
-    "zvedni": Command.STAND,
-    "lehni": Command.SIT,
-    "stoupni": Command.STAND,
-    "následuj": Command.FOLLOWING,
-    "stůj": Command.STOP,
-    "otoc vlevo": Command.ROTATE_LEFT,
-    "otoc vpravo": Command.ROTATE_RIGHT,
-    "doleva": Command.LEFT,
-    "doprava": Command.RIGHT,
+_COMMANDS_MAP = {
+    "backward": Command.BACKWARD,
+    "follow": Command.FOLLOWING,
+    "forward": Command.FORWARD,
+    "left": Command.LEFT,
+    "lie": Command.SIT,
+    "right": Command.RIGHT,
+    "rotate left": Command.ROTATE_LEFT,
+    "rotate right": Command.ROTATE_RIGHT,
+    "sit": Command.SIT,
+    "stand": Command.STAND,
+    "stop": Command.STOP,
 }
+
+# Keywords for speech recognition
+KEYWORDS = [(command, 1e-15) for command in _COMMANDS_MAP]
 
 
 def str_to_command(command: str) -> Command | None:
@@ -47,4 +49,4 @@ def str_to_command(command: str) -> Command | None:
         The Command object or None if the command is not recognized.
 
     """
-    return commands_map.get(command)
+    return _COMMANDS_MAP.get(command)
