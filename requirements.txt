@@ -33,4 +33,5 @@ SpeechRecognition==3.10.1
 opencv-python==4.9.0.80
 scipy==1.13.0
 ruff==0.4.2
-pocketsphinx==5.0.3
+paddleocr==2.7.3
+paddlepaddle==2.6.1

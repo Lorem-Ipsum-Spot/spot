@@ -1,15 +1,10 @@
 from bosdyn.api.image_pb2 import Image
 from bosdyn.api import image_pb2
 from bosdyn.api import image_pb2
-from bosdyn.client.image import ImageClient
-from bosdyn.client.image import ImageClient
 from bosdyn.client.image import ImageClient, build_image_request
-from paddleocr import PaddleOCR, draw_ocr
 from scipy import ndimage
 from spot.cli.command import Command
 from spot.vision.image_recognition import detect_text
-import bosdyn.client
-import bosdyn.client.util
 import cv2
 import numpy as np
 
