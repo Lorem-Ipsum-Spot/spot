@@ -49,7 +49,7 @@ class Listener:
             try:
                 text = recognizer.recognize_sphinx(
                     audio,
-                    language="cs-CZ",
+                    language="en-US",
                     keyword_entries=self.keywords,
                 ).lower()
 
