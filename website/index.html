@@ -9,7 +9,6 @@
 <body>
 <div id="buttonsDiv">
     <div id="switchDiv">
-        <button id="buttonListening" class="switchButton switchButtonUnactive" onclick="ListeningSwitch(this)">Listening there</button>
         <button id="buttonFollowing" class="switchButton switchButtonUnactive" onclick="FollowingSwitch(this)">Not following</button>
         <button id="buttonStop" class="switchButton" onclick="stopSpot()">Stop</button>
     </div>
@@ -19,6 +18,8 @@
             onmousedown ="MovementButtonDown(this,1)"
             onmouseup="MovementButtonUp(this,1)"
             onmouseout="MovementButtonUp(this,1)"
+            ontouchstart="MovementButtonDown(this,1)"
+            ontouchend="MovementButtonUp(this,1)"
             class="movementButton movementButtonUnactive">
             </button>
         <button
@@ -26,6 +27,8 @@
             onmousedown ="MovementButtonDown(this,-1)"
             onmouseup="MovementButtonUp(this,-1)"
             onmouseout="MovementButtonUp(this,-1)"
+            ontouchstart="MovementButtonDown(this,-1)"
+            ontouchend="MovementButtonUp(this,-1)"
             class="movementButton movementButtonUnactive">
             </button>
         <button
@@ -33,6 +36,8 @@
             onmousedown ="MovementButtonDown(this,-2)"
             onmouseup="MovementButtonUp(this,-2)"
             onmouseout="MovementButtonUp(this,-2)"
+            ontouchstart="MovementButtonDown(this,-2)"
+            ontouchend="MovementButtonUp(this,-2)"
             class="movementButton movementButtonUnactive">
             </button>
         <button
@@ -40,6 +45,8 @@
             onmousedown ="MovementButtonDown(this,2)"
             onmouseup="MovementButtonUp(this,2)"
             onmouseout="MovementButtonUp(this,2)"
+            ontouchstart="MovementButtonDown(this,2)"
+            ontouchend="MovementButtonUp(this,2)"
             class="movementButton movementButtonUnactive">
             </button>
         <button
@@ -57,6 +64,8 @@
             onmousedown ="RotationButtonDown(this,1)"
             onmouseup="RotationButtonUp(this,1)"
             onmouseout="RotationButtonUp(this,1)"
+            ontouchstart="RotationButtonDown(this,1)"
+            ontouchend="RotationButtonUp(this,1)"
             class="movementButton movementButtonUnactive">
             </button>
         <button
@@ -64,6 +73,8 @@
             onmousedown ="RotationButtonDown(this,-1)"
             onmouseup="RotationButtonUp(this,-1)"
             onmouseout="RotationButtonUp(this,-1)"
+            ontouchstart="RotationButtonDown(this,-1)"
+            ontouchend="RotationButtonUp(this,-1)"
             class="movementButton movementButtonUnactive">
             </button>
     </div>
