@@ -19,8 +19,7 @@ from spot.cli.server import run_http_server
 from spot.cli.stopper import Stop
 from spot.communication.estop import Estop
 from spot.movement.move import Move
-from spot.vision.get_image import get_complete_image
-from spot.vision.image_recognition import Direction, detect_lowerbody
+from spot.vision.get_image import dynamic_follow
 
 active_command = Command.STOP
 
@@ -134,8 +133,8 @@ def main_event_loop(
 
     def follow_cycle() -> None:
         # TODO: try the builtin solution
-        frame = get_complete_image(image_client)
-        instruction = detect_lowerbody(frame)
+        instruction = dynamic_follow(image_client)
+        
 
         global active_command
 

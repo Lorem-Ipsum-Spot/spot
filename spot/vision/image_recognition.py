@@ -16,12 +16,13 @@ def detect_text(frame,ocr):
             toply = points[3][1]
             botdx = points[1][0]
             botdy = points[1][1]
+            delka = int(points[1][0]) - int(points[0][0])
             text = line[0][1]
             if text[0] == "FOLLOW" or text[0] == "follow":
                 print(f"x: {toplx} y: {toply}")
                 cv2.rectangle(frame,(int(toplx),int(toply)),(int(botdx),int(botdy)),(255,245,0),2)
-                return int(toplx)
-        return int(-1)
+                return int(toplx),int(delka)
+        return int(-1), int(1000)
     #         cv2.imshow("follow", frame)
     #     if cv2.waitKey(1) == ord("q"):
     #         break
