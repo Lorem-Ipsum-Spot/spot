@@ -98,6 +98,10 @@ body
     border: solid 5px var(--colorprimary);
     background-color: transparent;
     color: var(--colorprimary);
+
+    background-size: 80% 80%;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 .movementButtonActive
@@ -117,6 +121,10 @@ body
     background-color: transparent;
     color: var(--colorprimary);
     border: solid 5px var(--colorprimary);
+
+    background-size: 80% 80%;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 .UpDownButton:active
@@ -128,41 +136,49 @@ body
 #buttonForward
 {
     grid-area: buttonForward;
+    background-image: url("graphics/arrowUp.svg");
 }
 
 #buttonBackward
 {
     grid-area: buttonBackward;
+    background-image: url("graphics/arrowDown.svg");
 }
 
 #buttonLeft
 {
     grid-area: buttonLeft;
+    background-image: url("graphics/arrowLeft.svg");
 }
 
 #buttonRight
 {
     grid-area: buttonRight;
+    background-image: url("graphics/arrowRight.svg");
 }
 
 #buttonUp
 {
     grid-area: buttonUp;
+    background-image: url("graphics/spotUp.svg");
 }
 
 #buttonDown
 {
     grid-area: buttonDown;
+    background-image: url("graphics/spotDown.svg");
 }
 
 #buttonRotateLeft
 {
     grid-area: buttonRotateLeft;
+    background-image: url("graphics/arrowTurnLeft.svg");
 }
 
 #buttonRotateRight
 {
     grid-area: buttonRotateRight;
+    background-image: url("graphics/arrowTurnRight.svg");
 }
 
 @media (orientation: portrait) {
