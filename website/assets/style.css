@@ -28,16 +28,11 @@ body
 #switchDiv
 {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     grid-template-rows: 1fr 1fr;
-    grid-template-areas: "buttonListening buttonFollowing" "buttonStop .";
+    grid-template-areas: "buttonFollowing" "buttonStop";
     gap: 1em;
     padding: 0.5em;
-}
-
-#buttonListening
-{
-    grid-area: buttonListening;
 }
 
 #buttonFollowing
