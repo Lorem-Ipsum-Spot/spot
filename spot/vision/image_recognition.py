@@ -1,10 +1,10 @@
-from cv2.typing import MatLike
+import numpy as np
 from paddleocr import PaddleOCR
 
 ocr = PaddleOCR(lang="en")
 
 
-def detect_text(frame: MatLike, text: str) -> tuple[int, int] | None:
+def detect_text(frame: np.ndarray, text: str) -> tuple[int, int] | None:
     """
     Detect text 'FOLLOW' in an image.
 
