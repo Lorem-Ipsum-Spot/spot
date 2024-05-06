@@ -147,7 +147,7 @@ def dynamic_follow(image_client: ImageClient) -> Command:
             print("Failed to get image, stopping")
             return Command.STOP
 
-        text = detect_text(pic)
+        text = detect_text(pic, "FOLLOW")
 
         if not text:
             continue
