@@ -2,7 +2,7 @@ import pathlib
 from enum import IntEnum
 
 import cv2
-from cv2.typing import MatLike
+import numpy as np
 
 PATH_TO_MODEL = (
     pathlib.Path(cv2.__file__).parent.absolute() / "data" / "haarcascade_lowerbody.xml"
@@ -29,7 +29,7 @@ class Direction(IntEnum):
 clf = cv2.CascadeClassifier(str(PATH_TO_MODEL))
 
 
-def detect_lowerbody(frame: MatLike) -> Direction | None:
+def detect_lowerbody(frame: np.ndarray) -> Direction | None:
     """
     Detect the lower body in the frame.
 
