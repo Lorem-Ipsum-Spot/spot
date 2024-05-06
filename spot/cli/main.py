@@ -13,14 +13,13 @@ from bosdyn.client.robot_command import RobotCommandClient
 from bosdyn.client.robot_state import RobotStateClient
 
 from spot.audio.main import Listener
-from spot.cli.command import Command, str_to_command, KEYWORDS
+from spot.cli.command import Command, str_to_command
 from spot.cli.curses import run_curses_gui
 from spot.cli.server import run_http_server
 from spot.cli.stopper import Stop
 from spot.communication.estop import Estop
 from spot.movement.move import Move
-from spot.vision.get_image import get_complete_image
-from spot.vision.image_recognition import Direction, detect_lowerbody
+from spot.vision.get_image import dynamic_follow
 
 active_command = Command.STOP
 
@@ -77,11 +76,10 @@ def main() -> None:
     command_client = ensure_client(RobotCommandClient)
     lease_client = ensure_client(LeaseClient)
     image_client = ensure_client(ImageClient)
-    # gripper_camera_param_client = ensure_client(GripperCameraParamClient)
 
     stopper = Stop()
 
-    create_ncurses_thread(estop_client, state_client, stopper)
+    # create_ncurses_thread(estop_client, state_client, stopper)
 
     with LeaseKeepAlive(lease_client, must_acquire=True, return_at_exit=True):
         print("Powering on robot... This may take several seconds.")
@@ -133,39 +131,43 @@ def main_event_loop(
     global active_command
 
     def follow_cycle() -> None:
-        # TODO: try the builtin solution
-        frame = get_complete_image(image_client)
-        instruction = detect_lowerbody(frame)
-
         global active_command
+        active_command = dynamic_follow(image_client)
 
-        match instruction:
-            case None:
-                active_command = Command.STOP
-            case Direction.LEFT:
-                mover.rotate_left()
-            case Direction.RIGHT:
-                mover.rotate_right()
-            case Direction.CENTER:
-                mover.forward()
+    def listener_callback(command_smth: object) -> None:
+        import re
 
-    def listener_callback(command_str: str) -> None:
-        command = str_to_command(command_str)
+        string = str(command_smth).replace("\n", "")
+
+        command_matched = re.match(r"[^:]*:\s*\"([\w\s]*)\".*", string)
+
+        assert command_matched is not None, f"'{string}' is in weird format"
+
+        command_parsed = command_matched.group(1)
+
+        command = str_to_command(command_parsed)
 
         if command is None:
-            print(f"Command not recognized: {command}")
+            print(f"Command not recognized: {command_parsed}")
             return
 
         print(f"Command recognized: {command}")
 
-    listener = Listener(KEYWORDS)
+        global active_command
+        active_command = command
+
+    listener = Listener()
     listener.run(stopper, listener_callback)
 
+    following = False
+
     while not stopper.flag:
-        time.sleep(0.4)
+        if following:
+            follow_cycle()
 
         match active_command:
             case Command.STOP:
+                following = False
                 continue
             case Command.FORWARD:
                 mover.forward()
@@ -183,15 +185,17 @@ def main_event_loop(
                 active_command = Command.STOP
             case Command.ROTATE_LEFT:
                 mover.rotate_left()
-                active_command = Command.STOP
             case Command.ROTATE_RIGHT:
                 mover.rotate_right()
-                active_command = Command.STOP
             case Command.FOLLOWING:
-                follow_cycle()
+                following = True
+                continue
+            case Command.FOLLOWING_PAUSED:
+                following = True
             case _:
                 print(f"Command not recognized: {active_command}")
-                continue
+
+        time.sleep(0.4)
 
 
 C = TypeVar("C", bound=BaseClient)

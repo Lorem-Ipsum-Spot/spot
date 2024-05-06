@@ -11,9 +11,8 @@ class Listener:
     recognizer: Recognizer
     microphone: Microphone
     stop_function: Callable[[bool], None]
-    keywords: list[tuple[str, float]]
 
-    def __init__(self, keywords: list[tuple[str, float]]) -> None:
+    def __init__(self) -> None:
         """
         Initialize the Listener object.
 
@@ -25,7 +24,6 @@ class Listener:
         """
         self.recognizer = Recognizer()
         self.microphone = Microphone()
-        self.keywords = keywords
 
     def run(self, stopper: Stop, callback: Callable[[str], None]) -> None:
         """
@@ -47,10 +45,9 @@ class Listener:
                 return
 
             try:
-                text = recognizer.recognize_sphinx(
+                text = recognizer.recognize_vosk(
                     audio,
                     language="en-US",
-                    keyword_entries=self.keywords,
                 ).lower()
 
                 callback(text)

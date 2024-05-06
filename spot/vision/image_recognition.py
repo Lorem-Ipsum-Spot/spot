@@ -1,79 +1,36 @@
-import pathlib
-from enum import IntEnum
+import numpy as np
+from paddleocr import PaddleOCR
 
-import cv2
-from cv2.typing import MatLike
-
-PATH_TO_MODEL = (
-    pathlib.Path(cv2.__file__).parent.absolute() / "data" / "haarcascade_lowerbody.xml"
-)
-"""
-"lowerbody"
-"frontalface_default"
-"eye"
-"""
-
-# compensate for camera direction
-# TODO: figure out best value
-X_DIRECTION_OFFSET = 0
+ocr = PaddleOCR(lang="en")
 
 
-class Direction(IntEnum):
-    """Enum for direction."""
-
-    LEFT = -1
-    CENTER = 0
-    RIGHT = 1
-
-
-clf = cv2.CascadeClassifier(str(PATH_TO_MODEL))
-
-
-def detect_lowerbody(frame: MatLike) -> Direction | None:
+def detect_text(frame: np.ndarray, text: str) -> tuple[int, int] | None:
     """
-    Detect the lower body in the frame.
+    Detect text 'FOLLOW' in an image.
 
     Parameters
     ----------
     frame : MatLike
-        The frame to detect the lower body in.
+        The image in which to detect text.
+    text : str
+        The text to search for in uppercase.
 
     Returns
     -------
-    Direction | None
-        The direction of the lower body or None if not detected.
+    tuple[int, int] | None
+        X-coordinate of the detected text, and the length of the text or None if no text
+        was found.
 
     """
-    # TODO: mozna zbytecny
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    legs = clf.detectMultiScale(
-        gray,
-        scaleFactor=1.1,
-        minNeighbors=5,
-        minSize=(30, 30),
-        flags=cv2.CASCADE_SCALE_IMAGE,
-    )
+    result = ocr.ocr(frame, cls=False)
+    for line in result:
+        if line is not None:
+            points = line[0][0]
+            toplx = points[3][0]
+            length = int(points[1][0]) - int(points[0][0])
+            text = line[0][1]
+            if text[0].upper() == text:
+                return int(toplx), int(length)
+        return -1, 1000
 
-    if len(legs) == 0:
-        return None
-
-    # TODO: mozna vybrat ten nejvetsi
-    x, _, width, _ = legs[0]
-    legs_center_x = x + width // 2
-
-    if target_reached():
-        return None
-
-    third_width = frame.shape[1] // 3
-
-    if legs_center_x < (third_width + X_DIRECTION_OFFSET):
-        return Direction.LEFT
-    elif legs_center_x > third_width * 2:
-        return Direction.RIGHT
-    else:
-        return Direction.CENTER
-
-
-# TODO: implement
-def target_reached() -> bool:
-    return False
+    return None
