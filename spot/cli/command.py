@@ -11,9 +11,10 @@ class Command(Enum):
     STAND = 4
     SIT = 5
     FOLLOWING = 6
-    STOP = 7
-    ROTATE_LEFT = 8
-    ROTATE_RIGHT = 9
+    FOLLOWING_PAUSED = 7
+    STOP = 8
+    ROTATE_LEFT = 9
+    ROTATE_RIGHT = 10
 
 
 _COMMANDS_MAP = {

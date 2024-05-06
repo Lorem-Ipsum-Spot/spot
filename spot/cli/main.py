@@ -132,21 +132,8 @@ def main_event_loop(
     global active_command
 
     def follow_cycle() -> None:
-        # TODO: try the builtin solution
-        instruction = dynamic_follow(image_client)
-        
-
         global active_command
-
-        match instruction:
-            case None:
-                active_command = Command.STOP
-            case Direction.LEFT:
-                mover.rotate_left()
-            case Direction.RIGHT:
-                mover.rotate_right()
-            case Direction.CENTER:
-                mover.forward()
+        active_command = dynamic_follow(image_client)
 
     def listener_callback(command_str: str) -> None:
         command = str_to_command(command_str)
@@ -160,11 +147,15 @@ def main_event_loop(
     listener = Listener(KEYWORDS)
     listener.run(stopper, listener_callback)
 
+    following = False
+
     while not stopper.flag:
-        time.sleep(0.4)
+        if following:
+            follow_cycle()
 
         match active_command:
             case Command.STOP:
+                following = False
                 continue
             case Command.FORWARD:
                 mover.forward()
@@ -182,15 +173,17 @@ def main_event_loop(
                 active_command = Command.STOP
             case Command.ROTATE_LEFT:
                 mover.rotate_left()
-                active_command = Command.STOP
             case Command.ROTATE_RIGHT:
                 mover.rotate_right()
-                active_command = Command.STOP
             case Command.FOLLOWING:
-                follow_cycle()
+                following = True
+                continue
+            case Command.FOLLOWING_PAUSED:
+                following = True
             case _:
                 print(f"Command not recognized: {active_command}")
-                continue
+
+        time.sleep(0.4)
 
 
 C = TypeVar("C", bound=BaseClient)
